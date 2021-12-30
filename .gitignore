@@ -1,3 +1,6 @@
+.idea
+.venv
+
 ### macOS template
 # General
 .DS_Store
