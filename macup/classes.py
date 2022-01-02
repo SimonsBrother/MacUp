@@ -15,6 +15,7 @@ class FileData:
         self.name = os.path.basename(path)
         self.is_directory = os.path.isdir(path)
         self.children = []
+        self.filter = filter_
         if self.is_directory:
             # If the file is a folder, create a list of FileData objects of the files children.
             # This is done by getting the names of files in the folder, and adding the path of the current folder.
@@ -26,3 +27,6 @@ class FileData:
                 if filter_(child_path):
                     # By recursively calling the FileData constructor, a file tree made of FileData classes is built.
                     self.children.append(FileData(child_path, filter_))
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(path={self.path}, filter_={self.filter.__name__})"
