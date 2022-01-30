@@ -1,7 +1,7 @@
 import os
 
 
-class FileData:
+class FileTree:
     """
     Stores important data about files or folders, and generates a file tree according to a filter provided.
     """
@@ -17,7 +17,7 @@ class FileData:
         self.children = []
         self.filter = filter_
         if self.is_directory:
-            # If the file is a folder, create a list of FileData objects of the files children.
+            # If the file is a folder, create a list of FileTree objects of the files children.
             # This is done by getting the names of files in the folder, and adding the path of the current folder.
             # This results in the full path of each file in the folder.
             child_paths = [os.path.join(path, child_name) for child_name in os.listdir(path)]
@@ -25,8 +25,8 @@ class FileData:
             # By filtering the paths to be used according to a function, files can be whitelisted or blacklisted.
             for child_path in child_paths:
                 if filter_(child_path):
-                    # By recursively calling the FileData constructor, a file tree made of FileData classes is built.
-                    self.children.append(FileData(child_path, filter_))
+                    # By recursively calling the FileTree constructor, a file tree made of FileTree classes is built.
+                    self.children.append(FileTree(child_path, filter_))
 
     def __repr__(self):
         return f"{self.__class__.__name__}(path={self.path}, filter_={self.filter.__name__})"
