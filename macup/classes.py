@@ -6,10 +6,11 @@ class FileTree:
     Stores important data about files or folders, and generates a file tree according to a filter provided.
     """
 
-    def __init__(self, path, filter_):
+    def __init__(self, path, filter_=None):
         """
         :param path: The full path of a folder or file.
-        :param filter_: A function that returns a boolean result if a path matches a certain criteria.
+        :param filter_: A function that returns a boolean result if a path matches a certain criteria. All values are
+        returned if left empty or passed None.
         """
         self.path = os.path.abspath(path)
         self.name = os.path.basename(path)
@@ -24,9 +25,10 @@ class FileTree:
 
             # By filtering the paths to be used according to a function, files can be whitelisted or blacklisted.
             for child_path in child_paths:
-                if filter_(child_path):
+                # If filter_ is None, the clause shorts, so filter_ is not called
+                if filter_ is None or filter_(child_path):
                     # By recursively calling the FileTree constructor, a file tree made of FileTree classes is built.
                     self.children.append(FileTree(child_path, filter_))
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(path={self.path}, filter_={self.filter.__name__})"
+        return f"{self.__class__.__name__}(path={self.path}, filter_={self.filter.__name__ if self.filter else None})"

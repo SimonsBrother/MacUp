@@ -1,8 +1,4 @@
-from macup.library import graftDirectory, getAllDirectories
-
-
-def return_true(node):
-    return True
+from macup.library import graftDirectory
 
 
 directory_to_copy = '/Users/calebhair/Documents/Projects/MacUp/macup/tests/TestDir/Folder1/SubFolder1'

@@ -1,4 +1,6 @@
+import os
 import re
+
 
 def traverseFileTree(file_tree, dir_func=tuple(), file_func=tuple(), use_child_as_parameter=False):
     """
@@ -65,3 +67,15 @@ def graftDirectory(location, source, target):
 
     truncated_dir = re.match(str(source) + r'(.*)', str(location)).group(1)  # Contains the directory without the source
     return str(target) + truncated_dir
+
+
+def buildDirectories(directories):
+    """
+    Ensures all the directories are present, adding ones that are not.
+
+    :param directories: Collection of directories to make/check
+    :return: Nothing
+    """
+
+    for directory in directories:
+        os.makedirs(directory, exist_ok=True)
