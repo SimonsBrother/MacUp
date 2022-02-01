@@ -1,3 +1,4 @@
+import re
 
 def traverseFileTree(file_tree, dir_func=tuple(), file_func=tuple(), use_child_as_parameter=False):
     """
@@ -51,3 +52,16 @@ def getAllDirectories(file_tree):
 
     dirs = list(filter(lambda dir_: dir_ is not None, list_of_dirs))
     return dirs
+
+
+def graftDirectory(location, source, target):
+    """
+    Removes the source part from the directory, and concatenates it onto target
+    :param location: The file/directory to be grafted from source directory to target directory
+    :param source: The source directory
+    :param target: The target directory
+    :return: The grafted directory
+    """
+
+    truncated_dir = re.match(str(source) + r'(.*)', str(location)).group(1)  # Contains the directory without the source
+    return str(target) + truncated_dir

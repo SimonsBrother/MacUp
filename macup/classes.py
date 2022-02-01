@@ -11,7 +11,7 @@ class FileTree:
         :param path: The full path of a folder or file.
         :param filter_: A function that returns a boolean result if a path matches a certain criteria.
         """
-        self.path = path
+        self.path = os.path.abspath(path)
         self.name = os.path.basename(path)
         self.is_directory = os.path.isdir(path)
         self.children = []
