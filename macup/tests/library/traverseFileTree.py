@@ -7,4 +7,5 @@ def output(node):
     return node
 
 
-print(traverseFileTree(FileTree(""), dir_func=(output,), use_child_as_parameter=True))
+print(traverseFileTree(FileTree("/Users/calebhair/Documents/Projects/MacUp/macup/tests/TestDir"),
+                       dir_func=(output,), use_child_as_parameter=True))

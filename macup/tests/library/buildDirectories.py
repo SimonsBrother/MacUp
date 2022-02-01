@@ -5,6 +5,6 @@ from macup.classes import FileTree
 testdir = FileTree("/Users/calebhair/Documents/Projects/MacUp/macup/tests/TestDir")
 target = "/Users/calebhair/Documents/Projects/MacUp/macup/tests/TestDir/Folder3/Sub Folder 2"
 
-directories_to_copy = [mul.graftDirectory(directory, testdir.path, target) for directory in mul.getAllDirectories(testdir)]
+directories_to_copy = [mul.graftDirectory(directory.path, testdir.path, target) for directory in mul.getAll(mul.DIRECTORY, testdir)]
 
 mul.buildDirectories(directories_to_copy)

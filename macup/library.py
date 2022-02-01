@@ -1,6 +1,9 @@
 import os
 import re
 
+DIRECTORY = 'DIRECTORY'
+FILES = 'FILES'
+
 
 def traverseFileTree(file_tree, dir_func=tuple(), file_func=tuple(), use_child_as_parameter=False):
     """
@@ -38,22 +41,27 @@ def traverseFileTree(file_tree, dir_func=tuple(), file_func=tuple(), use_child_a
     return output
 
 
-def getAllDirectories(file_tree):
+def getAll(type_, file_tree):
     """
-    Returns a list of directories contained in a directory and their descendants.
+    Returns a list of directories or files, depending on type, contained in a directory and their descendants.
 
+    :param type_: FILES or DIRECTORY
     :param file_tree: A FileTree node to work from
     :return: All the directories in and under the filetree provided
     """
 
-    def checkIfDirectory(fd):
-        if fd.is_directory:
-            return fd.path
+    def checkIfItem(ft):
+        if type_ == DIRECTORY and ft.is_directory:
+            return ft
+        elif type_ == FILES and not ft.is_directory:
+            return ft
 
-    list_of_dirs = traverseFileTree(file_tree, dir_func=(checkIfDirectory,), use_child_as_parameter=True)
+    # Will contain None values
+    unfiltered_items = traverseFileTree(file_tree, dir_func=(checkIfItem,), use_child_as_parameter=True)
 
-    dirs = list(filter(lambda dir_: dir_ is not None, list_of_dirs))
-    return dirs
+    # Removes None values
+    items = list(filter(lambda item: item is not None, unfiltered_items))
+    return items
 
 
 def graftDirectory(location, source, target):
@@ -65,7 +73,8 @@ def graftDirectory(location, source, target):
     :return: The grafted directory
     """
 
-    truncated_dir = re.match(str(source) + r'(.*)', str(location)).group(1)  # Contains the directory without the source
+    match = re.match(str(source) + r'(.*)', str(location))
+    truncated_dir = match.group(1)  # Contains the directory without the source
     return str(target) + truncated_dir
 
 
@@ -79,3 +88,7 @@ def buildDirectories(directories):
 
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
+
+
+def copyFiles(files):
+    pass
