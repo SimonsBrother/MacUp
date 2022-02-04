@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 
 DIRECTORY = 'DIRECTORY'
 FILES = 'FILES'
@@ -47,7 +48,7 @@ def getAll(type_, file_tree):
 
     :param type_: FILES or DIRECTORY
     :param file_tree: A FileTree node to work from
-    :return: All the directories in and under the filetree provided
+    :return: All the FileTree nodes of the type_ in and under the filetree provided
     """
 
     def checkIfItem(ft):
@@ -64,18 +65,18 @@ def getAll(type_, file_tree):
     return items
 
 
-def graftDirectory(location, source, target):
+def graftItem(item_path, source, target):
     """
-    Removes the source part from the directory, and concatenates it onto target
-    :param location: The file/directory to be grafted from source directory to target directory
+    Removes the source part from an item path, and concatenates it onto target
+    :param item_path: The file/directory to be grafted from source directory to target directory
     :param source: The source directory
     :param target: The target directory
     :return: The grafted directory
     """
 
-    match = re.match(str(source) + r'(.*)', str(location))
-    truncated_dir = match.group(1)  # Contains the directory without the source
-    return str(target) + truncated_dir
+    match = re.match(str(source) + r'(.*)', str(item_path))
+    truncated_item_path = match.group(1)  # Contains the directory without the source
+    return str(target) + truncated_item_path
 
 
 def buildDirectories(directories):
@@ -90,5 +91,21 @@ def buildDirectories(directories):
         os.makedirs(directory, exist_ok=True)
 
 
-def copyFiles(files):
-    pass
+def copyFiles(files, source, target, overwrite):
+    """
+    Copies the files to the target directory, checking if they already exist, overwriting them if told to.
+
+    :param source: Source directory; note, this is not the directory the files are in, but the directory from which
+    the backup originates from
+    :param overwrite: Boolean value to overwrite already present files or not
+    :param target: Target directory to which files will be copied
+    :param files: Collection of file paths to be copied
+    :return:
+    """
+    # Generate the new locations for each file
+    new_file_paths = [graftItem(file, source, target) for file in files]
+
+    # Copy files
+    for i, new_file_path in enumerate(new_file_paths):
+        if (not os.path.isfile(new_file_path)) or overwrite:  # If file doesn't exist or overwrite is true:
+            shutil.copy(files[i], new_file_path)
