@@ -4,14 +4,15 @@ import shutil
 
 DIRECTORY = 'DIRECTORY'
 FILES = 'FILES'
+BOTH = 'BOTH'
 
 
-def traverseFileTree(file_tree, dir_func=tuple(), file_func=tuple(), use_child_as_parameter=False):
+def traverseFileTree(ft_node, dir_func=tuple(), file_func=tuple(), use_child_as_parameter=False):
     """
     Traverses a FileTree and performs a function to each node.
 
     :param use_child_as_parameter: Boolean that indicates whether the child variable should be passed into functions.
-    :param file_tree: A FileTree object, from which to traverse.
+    :param ft_node: A FileTree object, from which to traverse.
     :param dir_func: A tuple in the format tuple(function, tuple(parameters)). Applies to directories (and files if one
      is not supplied for them).
     :param file_func: A tuple in the format tuple(function, tuple(parameters)). Applies to files (and directories if one
@@ -22,7 +23,7 @@ def traverseFileTree(file_tree, dir_func=tuple(), file_func=tuple(), use_child_a
         raise ValueError("Both function parameters cannot be empty.")
 
     output = []
-    for child in file_tree.children:
+    for child in ft_node.children:
 
         if child.is_directory:  # Decides which function should be used
             function = dir_func if dir_func else file_func
@@ -42,12 +43,12 @@ def traverseFileTree(file_tree, dir_func=tuple(), file_func=tuple(), use_child_a
     return output
 
 
-def getAll(type_, file_tree):
+def getAll(type_, ft_node):
     """
     Returns a list of directories or files, depending on type, contained in a directory and their descendants.
 
     :param type_: FILES or DIRECTORY
-    :param file_tree: A FileTree node to work from
+    :param ft_node: A FileTree node to work from
     :return: All the FileTree nodes of the type_ in and under the filetree provided
     """
 
@@ -58,7 +59,7 @@ def getAll(type_, file_tree):
             return ft
 
     # Will contain None values
-    unfiltered_items = traverseFileTree(file_tree, dir_func=(checkIfItem,), use_child_as_parameter=True)
+    unfiltered_items = traverseFileTree(ft_node, dir_func=(checkIfItem,), use_child_as_parameter=True)
 
     # Removes None values
     items = list(filter(lambda item: item is not None, unfiltered_items))
@@ -109,3 +110,30 @@ def copyFiles(files, source, target, overwrite):
     for i, new_file_path in enumerate(new_file_paths):
         if (not os.path.isfile(new_file_path)) or overwrite:  # If file doesn't exist or overwrite is true:
             shutil.copy(files[i], new_file_path)
+
+
+def regexFilter(regexes, ft_node):
+    """
+    Checks whether a certain FileTree node satisfies all the regular expressions provided.
+
+    :param regexes: An iterable container containing regular expressions for the item name
+    :param ft_node: A FileTree node, who's file name will be compared against the regexes
+    :return: True if the node path satisfies the regexes, False otherwise
+    """
+    # For every regular expression, apply it against the node's filename, then check they all return True
+    node_name = ft_node.name
+    return all([re.match(regex, node_name) for regex in regexes])
+
+
+def containsFilter(keywords, ft_node):
+    """
+    Checks that a FileTree node contains all the keywords provided.
+    This option is if the user does not know how to manipulate regexes.
+
+    :param keywords: An iterable container of strings with which to ensure each is 'in' ft_node's filename
+    :param ft_node: A FileTree node
+    :return: True if the node contains all the keywords, False otherwise
+    """
+    node_name = ft_node.name
+    return all([keyword in node_name for keyword in keywords])
+

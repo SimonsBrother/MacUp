@@ -6,7 +6,8 @@ testdir = FileTree("/Users/calebhair/Documents/Projects/MacUp/macup/tests/TestDi
 target = "/Users/calebhair/Documents/Projects/MacUp/macup/tests/TestDir/Folder3"
 
 # Build directories
-directories_to_copy = [mul.graftItem(directory.path, testdir.path, target) for directory in mul.getAll(mul.DIRECTORY, testdir)]
+directories_to_copy = [mul.graftItem(directory.path, testdir.path, target) for directory in
+                       mul.getAll(mul.DIRECTORY, testdir)]
 mul.buildDirectories(directories_to_copy)
 
 # Copy files
