@@ -112,28 +112,48 @@ def copyFiles(files, source, target, overwrite):
             shutil.copy(files[i], new_file_path)
 
 
-def regexFilter(regexes, ft_node):
+def regexFilter(regexes, path):
     """
     Checks whether a certain FileTree node satisfies all the regular expressions provided.
 
     :param regexes: An iterable container containing regular expressions for the item name
-    :param ft_node: A FileTree node, who's file name will be compared against the regexes
+    :param path: A FileTree node, who's file name will be compared against the regexes
     :return: True if the node path satisfies the regexes, False otherwise
     """
     # For every regular expression, apply it against the node's filename, then check they all return True
-    node_name = ft_node.name
-    return all([re.match(regex, node_name) for regex in regexes])
+    filename = os.path.basename(path)
+    return all([re.match(regex, filename) for regex in regexes])
 
 
-def containsFilter(keywords, ft_node):
+def containsFilter(keywords, path):
     """
     Checks that a FileTree node contains all the keywords provided.
     This option is if the user does not know how to manipulate regexes.
 
     :param keywords: An iterable container of strings with which to ensure each is 'in' ft_node's filename
-    :param ft_node: A FileTree node
+    :param path: A FileTree node
     :return: True if the node contains all the keywords, False otherwise
     """
-    node_name = ft_node.name
-    return all([keyword in node_name for keyword in keywords])
+    filename = os.path.basename(path)
+    return all([keyword in filename for keyword in keywords])
 
+
+def buildFilter(regexes, keywords, whitelist):
+    """
+    Builds the filter function to be passed to FileTree nodes; the filter function has to have one parameter.
+
+    :param whitelist: If true, items fitting the filter are included, else discarded
+    :param regexes: The regexes supplied by the user
+    :param keywords: The keywords supplied by the user
+    :return: filter function
+    """
+
+    def filter_(path):
+        fits_filter = regexFilter(regexes, path) and containsFilter(keywords, path)
+
+        if whitelist:
+            return fits_filter
+        else:
+            return not fits_filter
+
+    return filter_
