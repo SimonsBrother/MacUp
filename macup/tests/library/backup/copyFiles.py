@@ -1,5 +1,5 @@
 import macup.library.backup as mul
-from macup.classes import FileTree
+from macup.library.classes import FileTree
 
 
 testdir = FileTree("/macup/tests/TestDir/Folder1")

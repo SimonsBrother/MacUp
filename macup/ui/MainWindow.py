@@ -21,6 +21,9 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName("gridLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
+        self.addcfg_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.addcfg_btn.setObjectName("addcfg_btn")
+        self.horizontalLayout.addWidget(self.addcfg_btn)
         self.savecfg_btn = QtWidgets.QPushButton(self.centralwidget)
         self.savecfg_btn.setObjectName("savecfg_btn")
         self.horizontalLayout.addWidget(self.savecfg_btn)
@@ -85,8 +88,8 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        MainWindow.setTabOrder(self.cfgselect_combobox, self.savecfg_btn)
-        MainWindow.setTabOrder(self.savecfg_btn, self.delcfg_btn)
+        MainWindow.setTabOrder(self.cfgselect_combobox, self.addcfg_btn)
+        MainWindow.setTabOrder(self.addcfg_btn, self.delcfg_btn)
         MainWindow.setTabOrder(self.delcfg_btn, self.src_line)
         MainWindow.setTabOrder(self.src_line, self.src_btn)
         MainWindow.setTabOrder(self.src_btn, self.target_line)
@@ -96,8 +99,10 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.savecfg_btn.setStatusTip(_translate("MainWindow", "Make a new configuration..."))
-        self.savecfg_btn.setText(_translate("MainWindow", "Add..."))
+        self.addcfg_btn.setStatusTip(_translate("MainWindow", "Make a new configuration..."))
+        self.addcfg_btn.setText(_translate("MainWindow", "Add..."))
+        self.savecfg_btn.setStatusTip(_translate("MainWindow", "Save the open configuration."))
+        self.savecfg_btn.setText(_translate("MainWindow", "Save"))
         self.delcfg_btn.setStatusTip(_translate("MainWindow", "Delete the open configuration..."))
         self.delcfg_btn.setText(_translate("MainWindow", "Delete..."))
         self.cfgselect_combobox.setStatusTip(_translate("MainWindow", "Select a configuration."))

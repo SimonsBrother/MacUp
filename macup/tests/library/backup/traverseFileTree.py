@@ -1,5 +1,5 @@
 from macup.library.backup import traverseFileTree
-from macup.classes import FileTree
+from macup.library.classes import FileTree
 
 
 def output(node):

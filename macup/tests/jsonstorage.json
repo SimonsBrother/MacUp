@@ -6,24 +6,24 @@
   "configs" : [
     {
       "name": "configname",
-      "source directory": "///",
-      "target directory": "///",
-      "regexfilters": [
+      "source_dir": "//",
+      "target_dir": "///",
+      "regex_filters": [
         {
           "name": "regexfiltername",
-          "application": "app",
-          "item_type": "type",
+          "application": "PATHS",
+          "item_type": "FILES",
           "whitelist": true,
           "regex": "..."
         }
       ],
-      "keywordfilters": [
+      "keyword_filters": [
         {
-          "name": "regexfiltername",
-          "application": "app",
-          "item_type": "type",
+          "name": "a",
+          "application": "FILENAMES",
+          "item_type": "DIRECTORY",
           "whitelist": true,
-          "keyword": "..."
+          "keyword": "b"
         }
       ]
     }

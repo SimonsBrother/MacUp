@@ -1,5 +1,5 @@
 import macup.library.backup as bk
-from macup.classes import RegexFilter, KeywordFilter
+from macup.library.classes import RegexFilter, KeywordFilter
 
 regexes = [
     RegexFilter(r'..l...1', bk.FILENAMES, bk.DIRECTORY, True),
