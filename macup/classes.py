@@ -1,4 +1,5 @@
 import os
+from macup.library import FILENAMES, PATHS, FILES, DIRECTORY, BOTH
 
 
 class FileTree:
@@ -32,3 +33,35 @@ class FileTree:
 
     def __repr__(self):
         return f"{self.__class__.__name__}(path={self.path}, filter_={self.filter.__name__ if self.filter else None})"
+
+
+class Filter:
+    """
+    Stores filter data.
+    """
+    def __init__(self, application: str, item_type: str, whitelist: bool):
+        """
+        :param application: Whether the filter applies to the entire path or just the filename.
+        :param item_type: Whether the filter is applied to just files, just directories, or both.
+        :param whitelist:
+        """
+        if application not in [FILENAMES, PATHS]:  # Validate application
+            raise ValueError(f"Application value must either be '{FILENAMES}' or '{PATHS}', but got '{application}'.")
+        if item_type not in [FILES, DIRECTORY, BOTH]:
+            raise ValueError(f"Item type value must be either '{FILES}', '{PATHS}', or '{BOTH}', but got '{item_type}'.")
+
+        self.application = application
+        self.item_type = item_type
+        self.whitelist = whitelist
+
+
+class RegexFilter(Filter):
+    def __init__(self, regex, application: str, item_type: str, whitelist: bool):
+        super().__init__(application, item_type, whitelist)
+        self.regex = regex
+
+
+class KeywordFilter(Filter):
+    def __init__(self, keyword, application: str, item_type: str, whitelist: bool):
+        super().__init__(application, item_type, whitelist)
+        self.keyword = keyword
