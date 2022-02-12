@@ -1,5 +1,5 @@
 import os
-from macup.library import FILENAMES, PATHS, FILES, DIRECTORY, BOTH
+from macup.library.backup import FILENAMES, PATHS, FILES, DIRECTORY, BOTH
 
 
 class FileTree:
@@ -39,7 +39,7 @@ class Filter:
     """
     Stores filter data.
     """
-    def __init__(self, application: str, item_type: str, whitelist: bool):
+    def __init__(self, application: str, item_type: str, whitelist: bool, name=None):
         """
         :param application: Whether the filter applies to the entire path or just the filename.
         :param item_type: Whether the filter is applied to just files, just directories, or both.
@@ -50,6 +50,7 @@ class Filter:
         if item_type not in [FILES, DIRECTORY, BOTH]:
             raise ValueError(f"Item type value must be either '{FILES}', '{PATHS}', or '{BOTH}', but got '{item_type}'.")
 
+        self.name = name
         self.application = application
         self.item_type = item_type
         self.whitelist = whitelist

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>487</width>
-    <height>388</height>
+    <width>521</width>
+    <height>448</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,67 +17,140 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <widget class="QLabel" name="target_label">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The directory to which files will be copied.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Target directory</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="target_line">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The directory to which files will be copied.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="savecfg_btn">
+          <property name="statusTip">
+           <string>Make a new configuration...</string>
+          </property>
+          <property name="text">
+           <string>Add...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="delcfg_btn">
+          <property name="statusTip">
+           <string>Delete the open configuration...</string>
+          </property>
+          <property name="text">
+           <string>Delete...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="target_btn">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Open file browser...&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Select...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="src_btn">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Open file browser...&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Select...</string>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cfgselect_combobox">
+        <property name="statusTip">
+         <string>Select a configuration.</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="src_label">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The directory under which files will be copied.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
+       <widget class="QLabel" name="config_label">
         <property name="text">
-         <string>Source directory</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="src_line">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The directory under which files will be copied.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>Configuration</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
     <item>
-     <widget class="QTableView" name="filter_table"/>
+     <layout class="QGridLayout" name="src_tgt_layout">
+      <item row="2" column="0">
+       <widget class="QLabel" name="target_label">
+        <property name="text">
+         <string>Target directory</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QPushButton" name="target_btn">
+        <property name="statusTip">
+         <string>Open file browser...</string>
+        </property>
+        <property name="text">
+         <string>Select...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="target_line">
+        <property name="statusTip">
+         <string>The directory to which files will be copied.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="src_label">
+        <property name="text">
+         <string>Source directory</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="src_line">
+        <property name="statusTip">
+         <string>The directory under which files will be copied.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="src_btn">
+        <property name="statusTip">
+         <string>Open file browser...</string>
+        </property>
+        <property name="text">
+         <string>Select...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QListWidget" name="filter_listw"/>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="addfilter_btn">
+        <property name="statusTip">
+         <string>Add a new filter...</string>
+        </property>
+        <property name="text">
+         <string>Add filter...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="editfilter_btn">
+        <property name="statusTip">
+         <string>Edit the selected filter...</string>
+        </property>
+        <property name="text">
+         <string>Edit filter...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="delfilter_btn">
+        <property name="statusTip">
+         <string>Delete the selected filter...</string>
+        </property>
+        <property name="text">
+         <string>Delete filter...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <widget class="QPushButton" name="backup_btn">
+      <property name="statusTip">
+       <string>Start the backup...</string>
+      </property>
       <property name="text">
        <string>Start Backup</string>
       </property>
@@ -90,13 +163,23 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>487</width>
+     <width>521</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>cfgselect_combobox</tabstop>
+  <tabstop>savecfg_btn</tabstop>
+  <tabstop>delcfg_btn</tabstop>
+  <tabstop>src_line</tabstop>
+  <tabstop>src_btn</tabstop>
+  <tabstop>target_line</tabstop>
+  <tabstop>target_btn</tabstop>
+  <tabstop>backup_btn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

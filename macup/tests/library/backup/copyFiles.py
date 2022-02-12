@@ -1,8 +1,8 @@
-import macup.library as mul
+import macup.library.backup as mul
 from macup.classes import FileTree
 
 
-testdir = FileTree("/Users/calebhair/Documents/Projects/MacUp/macup/tests/TestDir/Folder1")
+testdir = FileTree("/macup/tests/TestDir/Folder1")
 target = "/Users/calebhair/Documents/Projects/MacUp/macup/tests/TestDir/Folder3"
 
 # Build directories

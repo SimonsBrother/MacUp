@@ -1,0 +1,31 @@
+{
+  "settings" : {
+
+  },
+
+  "configs" : [
+    {
+      "name": "configname",
+      "source directory": "///",
+      "target directory": "///",
+      "regexfilters": [
+        {
+          "name": "regexfiltername",
+          "application": "app",
+          "item_type": "type",
+          "whitelist": true,
+          "regex": "..."
+        }
+      ],
+      "keywordfilters": [
+        {
+          "name": "regexfiltername",
+          "application": "app",
+          "item_type": "type",
+          "whitelist": true,
+          "keyword": "..."
+        }
+      ]
+    }
+  ]
+}
