@@ -1,3 +1,3 @@
 import macup.library.general as general
 
-print(general.loadConfigs("/Users/calebhair/Documents/Projects/MacUp/macup/tests/jsonstorage.json"))
+print(general.loadConfigs(general.TEST_LOC))

@@ -58,8 +58,8 @@ class Filter:
         self.whitelist = whitelist
 
     def __repr__(self):
-        return f"Filter(name={self.name}, application={self.application}," \
-               f" item_type={self.item_type}, whitelist={self.whitelist})"
+        return f"Filter(name='{self.name}', application='{self.application}'," \
+               f" item_type='{self.item_type}', whitelist={self.whitelist})"
 
 
 class RegexFilter(Filter):
@@ -68,8 +68,8 @@ class RegexFilter(Filter):
         self.regex = regex
 
     def __repr__(self):
-        return f"RegexFilter(name={self.name}, application={self.application}," \
-               f" item_type={self.item_type}, whitelist={self.whitelist}, regex={self.regex})"
+        return f"RegexFilter(name='{self.name}', application='{self.application}'," \
+               f" item_type='{self.item_type}', whitelist={self.whitelist}, regex='{self.regex}')"
 
 
 class KeywordFilter(Filter):
@@ -78,8 +78,8 @@ class KeywordFilter(Filter):
         self.keyword = keyword
 
     def __repr__(self):
-        return f"KeywordFilter(name={self.name}, application={self.application}," \
-               f" item_type={self.item_type}, whitelist={self.whitelist}, keyword={self.keyword})"
+        return f"KeywordFilter(name='{self.name}', application='{self.application}'," \
+               f" item_type='{self.item_type}', whitelist={self.whitelist}, keyword='{self.keyword}')"
 
 
 class Configuration:
@@ -89,27 +89,36 @@ class Configuration:
 
     def __init__(self, name, source_dir, target_dir, regex_filters, keyword_filters):
         """
-        :param regex_filters: A list of dicts, each containing data to make a RegexFilter, loaded from a json file
-        :param keyword_filters: A list of dicts, each containing data to make a KeywordFilter, loaded from a json file
+        :param regex_filters: Either: a list of dicts, each containing data to make a RegexFilter
+                or a list of RegexFilter objects.
+        :param keyword_filters: Either: a list of dicts, each containing data to make a KeywordFilter,
+                or a list of KeywordFilter objects.
+                The filters are converted to their object if they are supplied as a dictionary.
         """
 
         self.name = name
         self.source_dir = source_dir
         self.target_dir = target_dir
-        self.regex_filters = []
-        self.keyword_filters = []
+        if isinstance(regex_filters[0], RegexFilter):
+            self.regex_filters = regex_filters
+        else:
+            self.regex_filters = []
+            # Parse regex filters, populate regex_filters
+            for regex_filter in regex_filters:
+                self.regex_filters.append(RegexFilter(regex_filter["regex"], regex_filter["application"],
+                                                      regex_filter["item_type"], regex_filter["whitelist"],
+                                                      regex_filter["name"]))
 
-        # Populate regex and keyword filters
-        for regex_filter in regex_filters:
-            self.regex_filters.append(RegexFilter(regex_filter["regex"], regex_filter["application"],
-                                                  regex_filter["item_type"], regex_filter["whitelist"],
-                                                  regex_filter["name"]))
-
-        for keyword_filter in keyword_filters:
-            self.keyword_filters.append(KeywordFilter(keyword_filter["keyword"], keyword_filter["application"],
-                                                      keyword_filter["item_type"], keyword_filter["whitelist"],
-                                                      keyword_filter["name"]))
+        if isinstance(keyword_filters[0], KeywordFilter):
+            self.keyword_filters = keyword_filters
+        else:
+            self.keyword_filters = []
+            # Parse keyword filters, populate keyword_filters
+            for keyword_filter in keyword_filters:
+                self.keyword_filters.append(KeywordFilter(keyword_filter["keyword"], keyword_filter["application"],
+                                                          keyword_filter["item_type"], keyword_filter["whitelist"],
+                                                          keyword_filter["name"]))
 
     def __repr__(self):
-        return f"Configuration(name={self.name}, source_dir={self.source_dir}, target_dir={self.target_dir}, " \
+        return f"Configuration(name='{self.name}', source_dir='{self.source_dir}', target_dir='{self.target_dir}', " \
                f"regex_filters={self.regex_filters}, keyword_filters={self.keyword_filters})"

@@ -157,6 +157,16 @@
      </layout>
     </item>
     <item>
+     <widget class="QCheckBox" name="overwrite_check">
+      <property name="statusTip">
+       <string>Overwrite files that already exist during the backup.</string>
+      </property>
+      <property name="text">
+       <string>Overwrite already existing files?</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="backup_btn">
       <property name="statusTip">
        <string>Start the backup...</string>
