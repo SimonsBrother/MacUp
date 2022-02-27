@@ -13,6 +13,7 @@ class FileTree:
         :param filter_: A function that returns a boolean result if a path matches a certain criteria. All values are
         returned if left empty or passed None.
         """
+
         self.path = os.path.abspath(path)
         self.name = os.path.basename(path)
         self.is_directory = os.path.isdir(path)
@@ -64,7 +65,7 @@ class Filter:
 
 class RegexFilter(Filter):
     def __init__(self, regex, application: str, item_type: str, whitelist: bool, name=""):
-        super().__init__(application, item_type, whitelist, name)
+        super().__init__(application, item_type, bool(whitelist), name)
         self.regex = regex
 
     def __repr__(self):
@@ -74,7 +75,7 @@ class RegexFilter(Filter):
 
 class KeywordFilter(Filter):
     def __init__(self, keyword, application: str, item_type: str, whitelist: bool, name=""):
-        super().__init__(application, item_type, whitelist, name)
+        super().__init__(application, item_type, bool(whitelist), name)
         self.keyword = keyword
 
     def __repr__(self):

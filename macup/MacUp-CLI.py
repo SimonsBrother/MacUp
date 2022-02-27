@@ -1,0 +1,69 @@
+import os
+import macup.library.classes as cls
+import macup.library.backup as bk
+
+
+def getDirectory(prompt):
+    directory = None
+    while directory is None or not os.path.isdir(directory):
+        directory = input(prompt)
+
+    return directory
+
+
+def getOption(prompt):
+    option = None
+    while option != 'y' and option != 'n':
+        option = input(prompt)
+
+    return option
+
+
+def getFilters(prompt, error_prompt, accepted_prompt, split_value, filtertype):
+    filters = []
+    input_ = None
+    error = False
+    while input_ != "exit":
+        if input_ is None:
+            input_ = input(prompt)
+        elif error:
+            input_ = input(error_prompt)
+        else:
+            input_ = input(accepted_prompt)
+
+        split_input = input_.split(split_value)
+        if len(split_input) != 5:
+            error = True
+        else:
+            try:
+                si = split_input  # simply exists to make the next line shorter
+                filters.append(filtertype(si[0], si[1], si[2], si[3], si[4]))
+                print(filters)
+                error = False
+            except ValueError:
+                error = True
+
+    return filters
+
+
+source_dir = getDirectory("Input source directory: ")
+target_dir = getDirectory("Input target directory: ")
+overwrite = getOption("Overwrite files? (y/n): ")
+regex_filters = getFilters("Input regex filters, type exit to quit; usage-  Regex : Application['FILENAMES'/'PATHS'] : "
+                           "Type['FILES'/'DIRECTORY'/'BOTH'] : Whitelist[True/False] : Name\nInput: ",
+                           "Invalid regex filter: ", "Regex filter accepted: ", ':', cls.RegexFilter)
+
+keyword_filters = getFilters(
+    "Input keyword filters, type exit to quit; usage-  Keyword : Application['FILENAMES'/'PATHS'] : "
+    "Type['FILES'/'DIRECTORY'/'BOTH'] : Whitelist[True/False] : Name\nInput: ",
+    "Invalid keyword filter: ", "Keyword filter accepted: ", ':', cls.KeywordFilter)
+
+
+source_ft_node = cls.FileTree(source_dir, bk.buildFilter(regex_filters, keyword_filters))
+
+directory_paths = [dir_ft.path for dir_ft in bk.getAll(bk.DIRECTORY, source_ft_node)]
+new_directory_paths = bk.graftDirectories(directory_paths, source_dir, target_dir)
+bk.buildDirectories(new_directory_paths)
+
+file_paths = [file_ft.path for file_ft in bk.getAll(bk.FILES, source_ft_node)]
+bk.copyFiles(file_paths, source_dir=source_dir, target_dir=target_dir, overwrite=overwrite)

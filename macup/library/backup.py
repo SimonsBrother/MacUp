@@ -56,6 +56,9 @@ def getAll(type_, ft_node):
     :return: All the FileTree nodes of the type_ in and under the filetree provided
     """
 
+    if type_ != DIRECTORY and type_ != FILES:
+        raise ValueError(f"type_ must be '{DIRECTORY}' or '{FILES}', not '{type_}'")
+
     def checkIfItem(ft):
         if type_ == DIRECTORY and ft.is_directory:
             return ft
@@ -84,31 +87,43 @@ def graftItem(item_path, source, target):
     return str(target) + truncated_item_path
 
 
+def graftDirectories(directories, source_dir, target_dir):
+    """
+    Takes a list of directories, and grafts them from their source directory to their target directory.
+
+    :param directories: List of directories in source directory
+    :param source_dir: Source directory
+    :param target_dir: Target directory
+    :return: Grafted directories
+    """
+
+    newDirectories = [graftItem(directory, source_dir, target_dir) for directory in directories]
+    return newDirectories
+
+
 def buildDirectories(directories):
     """
     Ensures all the directories are present, adding ones that are not.
 
     :param directories: Collection of directories to make/check
-    :return: Nothing
     """
 
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
 
 
-def copyFiles(files, source, target, overwrite):
+def copyFiles(files, source_dir, target_dir, overwrite):
     """
     Copies the files to the target directory, checking if they already exist, overwriting them if told to.
 
-    :param source: Source directory; note, this is not the directory the files are in, but the directory from which
+    :param source_dir: Source directory; note, this is not the directory the files are in, but the directory from which
     the backup originates from
     :param overwrite: Boolean value to overwrite already present files or not
-    :param target: Target directory to which files will be copied
-    :param files: Collection of file paths to be copied
-    :return:
+    :param target_dir: Target directory to which files will be copied
+    :param files: Iterable collection of file paths to be copied
     """
     # Generate the new locations for each file
-    new_file_paths = [graftItem(file, source, target) for file in files]
+    new_file_paths = [graftItem(file, source_dir, target_dir) for file in files]
 
     # Copy files
     for i, new_file_path in enumerate(new_file_paths):

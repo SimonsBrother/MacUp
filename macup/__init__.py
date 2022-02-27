@@ -5,4 +5,6 @@
 # todo: Validation
 # todo: Source and target directory browsers
 
-# todo: handle exceptions and permissions
+# todo: handle exceptions and permission requirements
+
+# todo: try out shutil copytree

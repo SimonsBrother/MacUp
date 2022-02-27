@@ -2,12 +2,11 @@ import macup.library.backup as bk
 from macup.library.classes import RegexFilter, KeywordFilter
 
 regexes = [
-    RegexFilter(r'..l...1', bk.FILENAMES, bk.DIRECTORY, True),
-    RegexFilter(r'.*calebhair.*', bk.PATHS, bk.BOTH, True),
+
 ]
 
 keywords = [
-    KeywordFilter('1', bk.FILENAMES, bk.BOTH, False),
+    KeywordFilter(name='Name', application='FILENAMES', item_type='DIRECTORY', whitelist=False, keyword='Computer Science')
 ]
 
-print(bk.applyFilter(regexes, keywords, "/macup/tests/TestDir/Folder1"))
+print(bk.applyFilter(regexes, keywords, "/Users/calebhair/Documents/School/A-Level/Physics"))
