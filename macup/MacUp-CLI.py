@@ -59,11 +59,4 @@ keyword_filters = getFilters(
     "Invalid keyword filter: ", "Keyword filter accepted: ", ':', cls.KeywordFilter)
 
 
-source_ft_node = cls.FileTree(source_dir, bk.buildFilter(regex_filters, keyword_filters))
-
-directory_paths = [dir_ft.path for dir_ft in bk.getAll(bk.DIRECTORY, source_ft_node)]
-new_directory_paths = bk.graftDirectories(directory_paths, source_dir, target_dir)
-bk.buildDirectories(new_directory_paths)
-
-file_paths = [file_ft.path for file_ft in bk.getAll(bk.FILES, source_ft_node)]
-bk.copyFiles(file_paths, source_dir=source_dir, target_dir=target_dir, overwrite=overwrite)
+bk.backup(source_dir, target_dir, regex_filters, keyword_filters, overwrite)

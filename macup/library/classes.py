@@ -1,5 +1,5 @@
 import os
-from macup.library.backup import FILENAMES, PATHS, FILES, DIRECTORY, BOTH
+from macup.library.constants import *
 
 
 class FileTree:

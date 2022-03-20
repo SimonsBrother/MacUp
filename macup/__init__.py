@@ -7,4 +7,4 @@
 
 # todo: handle exceptions and permission requirements
 
-# todo: try out shutil copytree
+# todo: document library files
