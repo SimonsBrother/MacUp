@@ -9,12 +9,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setWindowTitle("MacUp")
 
-        self.filter_listw.addItems(['test', 'test2'])
-        self.filter_listw.itemClicked.connect(self.item_clicked)
 
-    def item_clicked(self):
-        item = self.filter_listw.currentItem()
-        print(item.text())
 
 
 if __name__ == "__main__":
