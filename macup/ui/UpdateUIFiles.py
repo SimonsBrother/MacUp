@@ -1,5 +1,5 @@
 """
-Simple maintainance script to update .ui files to their python equivalents
+Simple maintenance script to update .ui files to their python equivalents
 """
 
 # pyuic6 .ui -o .py

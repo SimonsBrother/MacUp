@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'addconfigwidget.ui'
+# Form implementation generated from reading ui file 'addconfig.ui'
 #
 # Created by: PyQt6 UI code generator 6.2.3
 #
@@ -9,30 +9,33 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(309, 88)
-        self.verticalLayout = QtWidgets.QVBoxLayout(Form)
+class Ui_addconfig(object):
+    def setupUi(self, addconfig):
+        addconfig.setObjectName("addconfig")
+        addconfig.resize(340, 82)
+        self.verticalLayout = QtWidgets.QVBoxLayout(addconfig)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.cfgname_label = QtWidgets.QLabel(Form)
+        self.cfgname_label = QtWidgets.QLabel(addconfig)
         self.cfgname_label.setObjectName("cfgname_label")
         self.horizontalLayout.addWidget(self.cfgname_label)
-        self.name_lineedit = QtWidgets.QLineEdit(Form)
+        self.name_lineedit = QtWidgets.QLineEdit(addconfig)
         self.name_lineedit.setObjectName("name_lineedit")
         self.horizontalLayout.addWidget(self.name_lineedit)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        self.buttonBox = QtWidgets.QDialogButtonBox(Form)
+        self.buttonBox = QtWidgets.QDialogButtonBox(addconfig)
+        self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Save)
         self.buttonBox.setObjectName("buttonBox")
         self.verticalLayout.addWidget(self.buttonBox)
 
-        self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(addconfig)
+        self.buttonBox.accepted.connect(addconfig.accept) # type: ignore
+        self.buttonBox.rejected.connect(addconfig.reject) # type: ignore
+        QtCore.QMetaObject.connectSlotsByName(addconfig)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, addconfig):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.cfgname_label.setText(_translate("Form", "Configuration name:"))
+        addconfig.setWindowTitle(_translate("addconfig", "Dialog"))
+        self.cfgname_label.setText(_translate("addconfig", "Configuration name:"))

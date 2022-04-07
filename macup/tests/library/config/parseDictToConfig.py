@@ -1,4 +1,4 @@
-import macup.library.general as general
+import macup.library.config as general
 
 config = {
       "name": "configname",

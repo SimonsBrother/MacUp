@@ -100,9 +100,18 @@ class Configuration:
         self.name = name
         self.source_dir = source_dir
         self.target_dir = target_dir
-        if isinstance(regex_filters[0], RegexFilter):
+
+        # Regex filters
+        if not regex_filters:
+            # If empty list
+            self.regex_filters = []
+
+        elif isinstance(regex_filters[0], RegexFilter):
+            # If filters are objects
             self.regex_filters = regex_filters
+
         else:
+            # If filters are dicts
             self.regex_filters = []
             # Parse regex filters, populate regex_filters
             for regex_filter in regex_filters:
@@ -110,9 +119,17 @@ class Configuration:
                                                       regex_filter["item_type"], regex_filter["whitelist"],
                                                       regex_filter["name"]))
 
-        if isinstance(keyword_filters[0], KeywordFilter):
+        # Keyword filters
+        if not keyword_filters:
+            # If empty list
+            self.keyword_filters = []
+
+        elif isinstance(keyword_filters[0], KeywordFilter):
+            # If filters are objects
             self.keyword_filters = keyword_filters
+
         else:
+            # If filters are dicts
             self.keyword_filters = []
             # Parse keyword filters, populate keyword_filters
             for keyword_filter in keyword_filters:

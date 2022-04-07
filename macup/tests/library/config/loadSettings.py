@@ -1,3 +1,3 @@
-import macup.library.general as general
+import macup.library.config as general
 
 print(general.loadConfigs(general.TEST_LOC))

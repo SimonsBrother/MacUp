@@ -10,7 +10,7 @@ def loadConfigs(json_path):
     Extracts configurations stored in a json file.
 
     :param json_path: The path to the json file
-    :return: Configuration objects
+    :return: List of configuration objects
     """
 
     with open(json_path, "r") as f:
@@ -82,12 +82,15 @@ def parseDictToConfig(dict_):
 
 def saveConfig(json_path, config):
     """
-    Save the configuration dictionary supplied, to the json file path; if a configuration with the same name exists,
+    Save the configuration supplied, to the json file path; if a configuration with the same name exists,
     it will be overwritten.
 
     :param json_path: The json file path
-    :param config: A config dictionary
+    :param config: A config dictionary or object
     """
+
+    if isinstance(config, Configuration):
+        config = parseConfigToDict(config)
 
     f = open(json_path, "r")
     json_file = json.load(f)
@@ -107,3 +110,27 @@ def saveConfig(json_path, config):
     f = open(json_path, "w")
     json.dump(json_file, f, indent=4)
     f.close()
+
+
+def makeNewConfig(name, json_path):
+    """Saves an almost blank configuration with just the name filled"""
+    saveConfig(json_path, parseConfigToDict(Configuration(name, "", "", [], [])))
+
+# todo: make test (already tested in ui)
+def checkNameExists(name, json_path):
+    """ Returns true if the name provided is already used in a configuration file """
+
+    for cfg in loadConfigs(json_path):
+        if name == cfg.name:
+            return True
+
+    return False
+
+# todo make test
+def loadConfig(name, json_path):
+    """ Searches through available configs, returns the one with a matching name as a config object"""
+
+    cfgs = loadConfigs(json_path)
+    for cfg in cfgs:
+        if cfg.name == name:
+            return cfg
