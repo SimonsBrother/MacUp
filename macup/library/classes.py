@@ -140,4 +140,4 @@ class Configuration:
 
     def __repr__(self):
         return f"Configuration(name='{self.name}', source_dir='{self.source_dir}', target_dir='{self.target_dir}', " \
-               f"regex_filters={self.regex_filters}, keyword_filters={self.keyword_filters})"
+               f"regex_filters={self.regex_filters}, keyword_filters={self.keyword_filters}, overwrite={self.overwrite})"

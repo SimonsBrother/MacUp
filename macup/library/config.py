@@ -7,7 +7,7 @@ TEST_LOC = "/Users/calebhair/Documents/Projects/MacUp/macup/tests/jsonstorage.js
 
 def loadConfigs(json_path):
     """
-    Extracts configurations stored in a json file.
+    Extracts configurations stored in a json file, returning a list of config objects.
 
     :param json_path: The path to the json file
     :return: List of configuration objects
@@ -20,6 +20,16 @@ def loadConfigs(json_path):
             configs.append(Configuration(config["name"], config["source_dir"], config["target_dir"],
                                          config["regex_filters"], config["keyword_filters"], config["overwrite"]))
     return configs
+
+
+# todo make test
+def loadConfig(name, json_path):
+    """ Searches through available configs, returns the one with a matching name as a config object"""
+
+    cfgs = loadConfigs(json_path)
+    for cfg in cfgs:
+        if cfg.name == name:
+            return cfg
 
 
 def parseConfigToDict(config):
@@ -92,6 +102,9 @@ def saveConfig(json_path, config):
 
     if isinstance(config, Configuration):
         config = parseConfigToDict(config)
+    # Touch of error checking
+    elif not isinstance(config, dict):
+        raise TypeError("Must be either dict or Configuration object")
 
     f = open(json_path, "r")
     json_file = json.load(f)
@@ -113,7 +126,7 @@ def saveConfig(json_path, config):
     f.close()
 
 
-def saveNewConfig(name, json_path):
+def saveNewBlankConfig(name, json_path):
     """Saves an almost blank configuration with just the name filled"""
     saveConfig(json_path, parseConfigToDict(Configuration(name, "", "", [], [], False)))
 
@@ -127,11 +140,21 @@ def checkNameExists(name, json_path):
 
     return False
 
-# todo make test
-def loadConfig(name, json_path):
-    """ Searches through available configs, returns the one with a matching name as a config object"""
 
-    cfgs = loadConfigs(json_path)
-    for cfg in cfgs:
-        if cfg.name == name:
-            return cfg
+def deleteConfig(name, json_path):
+    """ Deletes the config from the json file """
+
+    f = open(json_path, "r")
+    json_file = json.load(f)
+    f.close()
+
+    for i, config in enumerate(json_file["configs"]):
+        if config["name"] == name:
+            json_file["configs"].pop(i)
+
+            f = open(json_path, "w")
+            json.dump(json_file, f, indent=4)
+            f.close()
+            return True
+
+    return False

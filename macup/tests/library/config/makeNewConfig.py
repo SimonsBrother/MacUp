@@ -6,4 +6,4 @@ kw_filters = [{'name': 'kw filter!!', 'application': 'PATHS', 'item_type': 'FILE
 
 cfg = cls.Configuration("write test", "source dir goes here", "target dir here", regex_filters, kw_filters, False)
 
-print(cfgs.saveNewConfig("Test", cfgs.TEST_LOC))
+print(cfgs.saveNewBlankConfig("Test", cfgs.TEST_LOC))

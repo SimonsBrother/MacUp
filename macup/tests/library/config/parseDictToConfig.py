@@ -1,27 +1,5 @@
 import macup.library.config as general
 
-config = {
-      "name": "configname",
-      "source_dir": "//",
-      "target_dir": "///",
-      "regex_filters": [
-        {
-          "name": "regexfiltername",
-          "application": "PATHS",
-          "item_type": "FILES",
-          "whitelist": True,
-          "regex": "..."
-        }
-      ],
-      "keyword_filters": [
-        {
-          "name": "a",
-          "application": "FILENAMES",
-          "item_type": "DIRECTORY",
-          "whitelist": True,
-          "keyword": "b"
-        }
-    ]
-}
+config = {'name': 'write test', 'source_dir': 'source dir goes here', 'target_dir': 'target dir here', 'regex_filters': [{'name': 'RegName', 'application': 'PATHS', 'item_type': 'DIRECTORY', 'whitelist': 'False', 'regex': 'test'}, {'name': 'dot underscore dot', 'application': 'FILENAMES', 'item_type': 'BOTH', 'whitelist': 'True', 'regex': '._.'}], 'keyword_filters': [{'name': 'kw filter!!', 'application': 'PATHS', 'item_type': 'FILES', 'whitelist': 'False', 'keyword': 'py'}], 'overwrite': True}
 
 print(general.parseDictToConfig(config))

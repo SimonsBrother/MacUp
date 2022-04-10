@@ -2,30 +2,6 @@
     "settings": {},
     "configs": [
         {
-            "name": "configname",
-            "source_dir": "//",
-            "target_dir": "///",
-            "regex_filters": [
-                {
-                    "name": "regexfiltername",
-                    "application": "PATHS",
-                    "item_type": "FILES",
-                    "whitelist": true,
-                    "regex": "..."
-                }
-            ],
-            "keyword_filters": [
-                {
-                    "name": "a",
-                    "application": "FILENAMES",
-                    "item_type": "DIRECTORY",
-                    "whitelist": true,
-                    "keyword": "b"
-                }
-            ],
-            "overwrite": false
-        },
-        {
             "name": "write test",
             "source_dir": "source dir goes here",
             "target_dir": "target dir here",
@@ -34,7 +10,7 @@
                     "name": "RegName",
                     "application": "PATHS",
                     "item_type": "DIRECTORY",
-                    "whitelist": "False",
+                    "whitelist": "True",
                     "regex": "test"
                 },
                 {
@@ -50,14 +26,22 @@
                     "name": "kw filter!!",
                     "application": "PATHS",
                     "item_type": "FILES",
-                    "whitelist": "False",
+                    "whitelist": "True",
                     "keyword": "py"
                 }
             ],
             "overwrite": false
         },
         {
-            "name": "Test",
+            "name": "123",
+            "source_dir": "",
+            "target_dir": "",
+            "regex_filters": [],
+            "keyword_filters": [],
+            "overwrite": false
+        },
+        {
+            "name": "test",
             "source_dir": "",
             "target_dir": "",
             "regex_filters": [],
