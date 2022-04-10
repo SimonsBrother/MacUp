@@ -22,7 +22,8 @@
                     "whitelist": true,
                     "keyword": "b"
                 }
-            ]
+            ],
+            "overwrite": false
         },
         {
             "name": "write test",
@@ -52,21 +53,16 @@
                     "whitelist": "False",
                     "keyword": "py"
                 }
-            ]
+            ],
+            "overwrite": false
         },
         {
             "name": "Test",
             "source_dir": "",
             "target_dir": "",
             "regex_filters": [],
-            "keyword_filters": []
-        },
-        {
-            "name": "AAAA",
-            "source_dir": "",
-            "target_dir": "",
-            "regex_filters": [],
-            "keyword_filters": []
+            "keyword_filters": [],
+            "overwrite": true
         }
     ]
 }

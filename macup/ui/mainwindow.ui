@@ -120,7 +120,7 @@
      </layout>
     </item>
     <item>
-     <widget class="QListWidget" name="filter_listw"/>
+     <widget class="QListWidget" name="filter_listwidget"/>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">

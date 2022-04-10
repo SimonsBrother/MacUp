@@ -88,7 +88,7 @@ class Configuration:
     A class to store configuration data from a json file.
     """
 
-    def __init__(self, name, source_dir, target_dir, regex_filters, keyword_filters):
+    def __init__(self, name, source_dir, target_dir, regex_filters, keyword_filters, overwrite):
         """
         :param regex_filters: Either: a list of dicts, each containing data to make a RegexFilter
                 or a list of RegexFilter objects.
@@ -100,6 +100,7 @@ class Configuration:
         self.name = name
         self.source_dir = source_dir
         self.target_dir = target_dir
+        self.overwrite = overwrite
 
         # Regex filters
         if not regex_filters:

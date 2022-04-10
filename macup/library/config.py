@@ -18,7 +18,7 @@ def loadConfigs(json_path):
         configs = []
         for config in json_configs:
             configs.append(Configuration(config["name"], config["source_dir"], config["target_dir"],
-                                         config["regex_filters"], config["keyword_filters"]))
+                                         config["regex_filters"], config["keyword_filters"], config["overwrite"]))
     return configs
 
 
@@ -62,7 +62,8 @@ def parseConfigToDict(config):
         "source_dir": str(config.source_dir),
         "target_dir": str(config.target_dir),
         "regex_filters": regex_filters_dict,
-        "keyword_filters": kw_filters_dict
+        "keyword_filters": kw_filters_dict,
+        "overwrite": bool(config.overwrite)
     }
 
     return config_dict
@@ -77,7 +78,7 @@ def parseDictToConfig(dict_):
     """
 
     return Configuration(dict_["name"], dict_["source_dir"], dict_["target_dir"],
-                         dict_["regex_filters"], dict_["keyword_filters"])
+                         dict_["regex_filters"], dict_["keyword_filters"], dict_["overwrite"])
 
 
 def saveConfig(json_path, config):
@@ -99,12 +100,12 @@ def saveConfig(json_path, config):
     # Iterate through existing configs, replace config with same name if it exists
     overwritten = False  # if the config already exists, it will need to be overwritten instead of appended
     for i, json_config in enumerate(json_file["configs"]):
-        if config["name"] == json_config["name"]:  # if name of config in json file = name of new config
+        if config["name"] == json_config["name"]:  # if name of new config = name of config in json file
             json_file["configs"][i] = config  # overwrite config
             overwritten = True
             break
 
-    if not overwritten:
+    if not overwritten:  # Config with that name didn't exist, so wasn't overwritten, so make it exist!
         json_file["configs"].append(config)
 
     f = open(json_path, "w")
@@ -112,9 +113,9 @@ def saveConfig(json_path, config):
     f.close()
 
 
-def makeNewConfig(name, json_path):
+def saveNewConfig(name, json_path):
     """Saves an almost blank configuration with just the name filled"""
-    saveConfig(json_path, parseConfigToDict(Configuration(name, "", "", [], [])))
+    saveConfig(json_path, parseConfigToDict(Configuration(name, "", "", [], [], False)))
 
 # todo: make test (already tested in ui)
 def checkNameExists(name, json_path):

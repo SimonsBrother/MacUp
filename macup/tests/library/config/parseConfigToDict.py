@@ -13,6 +13,6 @@ kw_filters = [
 #regex_filters2 = [{'name': 'RegName', 'application': 'PATHS', 'item_type': 'DIRECTORY', 'whitelist': 'False', 'regex': 'test'}, {'name': 'dot underscore dot', 'application': 'FILENAMES', 'item_type': 'BOTH', 'whitelist': 'True', 'regex': '._.'}]
 #kw_filters2 = [{'name': 'kw filter!!', 'application': 'PATHS', 'item_type': 'FILES', 'whitelist': 'False', 'keyword': 'py'}]
 
-cfg = cls.Configuration("write test", "source dir goes here", "target dir here", regex_filters, kw_filters)
+cfg = cls.Configuration("write test", "source dir goes here", "target dir here", regex_filters, kw_filters, False)
 
 print(general.parseConfigToDict(cfg))
