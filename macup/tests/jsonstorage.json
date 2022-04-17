@@ -3,7 +3,7 @@
     "configs": [
         {
             "name": "write test",
-            "source_dir": "source dir goes here",
+            "source_dir": "/Users/calebhair/Documents/Projects/MacUp/macup/library/ui",
             "target_dir": "target dir here",
             "regex_filters": [
                 {
@@ -34,15 +34,15 @@
         },
         {
             "name": "123",
-            "source_dir": "",
-            "target_dir": "",
+            "source_dir": "test",
+            "target_dir": "/Users/calebhair/Documents/Projects/MacUp/macup/library/ui/__pycache__",
             "regex_filters": [],
             "keyword_filters": [],
             "overwrite": false
         },
         {
             "name": "test",
-            "source_dir": "",
+            "source_dir": "test",
             "target_dir": "",
             "regex_filters": [],
             "keyword_filters": [],

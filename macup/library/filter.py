@@ -10,12 +10,12 @@ import re
 
 def applyFilter(regex_filters, keyword_filters, path):
     """
-    Checks whether a certain FileTree node satisfies all the regular expressions provided.
+    Checks whether a certain path satisfies all the regular expressions provided.
 
     :param keyword_filters: An iterable container containing keywordFilters to be applied
     :param regex_filters: An iterable container containing RegexFilters to be applied
     :param path: A path for the filters to be applied on
-    :return: True if the node path satisfies each RegexFilter, False otherwise
+    :return: True if the node path satisfies each filter, False otherwise
     """
 
     def handleFilter(filter_, type_, path_):

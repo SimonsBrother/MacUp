@@ -7,7 +7,7 @@ class FileTree:
     Stores important data about files or folders, and generates a file tree according to a filter provided.
     """
 
-    def __init__(self, path, filter_=None):
+    def __init__(self, path, filter_=None, do_recursion=True):
         """
         :param path: The full path of a folder or file.
         :param filter_: A function that returns a boolean result if a path matches a certain criteria. All values are
@@ -19,7 +19,7 @@ class FileTree:
         self.is_directory = os.path.isdir(path)
         self.children = []
         self.filter = filter_
-        if self.is_directory:
+        if self.is_directory and do_recursion:
             # If the file is a folder, create a list of FileTree objects of the files children.
             # This is done by getting the names of files in the folder, and adding the path of the current folder.
             # This results in the full path of each file in the folder.

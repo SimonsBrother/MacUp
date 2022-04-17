@@ -2,6 +2,6 @@ from PyQt6 import QtWidgets, uic
 
 app = QtWidgets.QApplication([])
 
-window = uic.loadUi("addconfig.ui")
+window = uic.loadUi("modifyfilter.ui")
 window.show()
 app.exec()
