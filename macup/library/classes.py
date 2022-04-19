@@ -66,21 +66,23 @@ class Filter:
 class RegexFilter(Filter):
     def __init__(self, regex, application: str, item_type: str, whitelist: bool, name=""):
         super().__init__(application, item_type, bool(whitelist), name)
-        self.regex = regex
+        self.data = regex
+        self.filter_type = "Regex"
 
     def __repr__(self):
         return f"RegexFilter(name='{self.name}', application='{self.application}'," \
-               f" item_type='{self.item_type}', whitelist={self.whitelist}, regex='{self.regex}')"
+               f" item_type='{self.item_type}', whitelist={self.whitelist}, regex='{self.data}')"
 
 
 class KeywordFilter(Filter):
     def __init__(self, keyword, application: str, item_type: str, whitelist: bool, name=""):
         super().__init__(application, item_type, bool(whitelist), name)
-        self.keyword = keyword
+        self.data = keyword
+        self.filter_type = "Keyword"
 
     def __repr__(self):
         return f"KeywordFilter(name='{self.name}', application='{self.application}'," \
-               f" item_type='{self.item_type}', whitelist={self.whitelist}, keyword='{self.keyword}')"
+               f" item_type='{self.item_type}', whitelist={self.whitelist}, data='{self.data}')"
 
 
 class Configuration:

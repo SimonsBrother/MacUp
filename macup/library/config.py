@@ -50,11 +50,11 @@ def parseConfigToDict(config):
             "application": str(regex_filter.application),
             "item_type": str(regex_filter.item_type),
             "whitelist": str(regex_filter.whitelist),
-            "regex": str(regex_filter.regex)
+            "regex": str(regex_filter.data)
         }
         regex_filters_dict.append(json_regex_filter)
 
-    # Parse each keyword filter in each config
+    # Parse each data filter in each config
     kw_filters_dict = []
     for kw_filter in config.keyword_filters:
         json_kw_filter = {
@@ -62,7 +62,7 @@ def parseConfigToDict(config):
             "application": str(kw_filter.application),
             "item_type": str(kw_filter.item_type),
             "whitelist": str(kw_filter.whitelist),
-            "keyword": str(kw_filter.keyword)
+            "keyword": str(kw_filter.data)
         }
         kw_filters_dict.append(json_kw_filter)
 

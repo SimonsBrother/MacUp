@@ -2,7 +2,8 @@ from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox
 
 import macup.library.config as cfglib
-from macup.library.classes import Configuration
+from macup.library.classes import Configuration, RegexFilter, KeywordFilter
+import macup.library.constants as consts
 
 from macup.ui.mainwindow import Ui_MainWindow
 from macup.library.ui.addconfig import AddConfigDialogUI
@@ -33,6 +34,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.src_btn.clicked.connect(self.selectSourceDir)
         self.target_btn.clicked.connect(self.selectTargetDir)
         self.addfilter_btn.clicked.connect(self.openAddFilterDialog)
+        self.editfilter_btn.clicked.connect(self.openEditFilterDialog_byBtn)
 
         # Unsaved changes detection
         # textEdited must be used - textChanged causes problems when switching between configs
@@ -152,8 +154,99 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         edit_filter_dlg = ModifyFilterDialogUI()
         edit_filter_dlg.setWindowTitle("Add filter")
         response = edit_filter_dlg.exec()
+
         if response == 1:
-            pass
+            filter_ = edit_filter_dlg.filter_
+            if isinstance(filter_, RegexFilter):
+                self.loaded_cfg.regex_filters.append(filter_)
+            # Use elif in case None returned
+            elif isinstance(filter_, KeywordFilter):
+                self.loaded_cfg.keyword_filters.append(filter_)
+
+            self.filter_listwidget.addItem(filter_.name)
+            self.noteUnsavedChanges()
+
+    def openEditFilterDialog_byBtn(self):
+        """ Handles the opening of the dialog for editing a filter by edit btn, :returns true if successful """
+        if len(self.filter_listwidget.selectedItems()) == 0:
+            QMessageBox.information(self, "", "No filters selected.")
+            return False
+        else:
+            self.openEditFilterDialog(self.filter_listwidget.selectedItems()[0].text())
+            return True
+
+    def openEditFilterDialog(self, filter_name):
+        """ Handles opening a dialog for editing a filter, given an argument. To be called by other functions. """
+        # todo: known bug with changing type of filter, going to change filter system
+        # Get the filter that matches the filter name supplied
+        editing_filter = None
+        for filter_ in (self.loaded_cfg.regex_filters + self.loaded_cfg.keyword_filters):
+            # For each filter, compare its name with the name provided, break out after noting the filter if found
+            if filter_.name == filter_name:
+                editing_filter = filter_
+                break
+
+        if editing_filter is None:
+            # No non-existent filter name should be found.
+            QMessageBox.warning(self, "", "Filter could not be found. Please tell the developer.")
+            return
+
+        edit_filter_dlg = ModifyFilterDialogUI()
+        # Fill and disable name line edit
+        edit_filter_dlg.ui.namelineedit.setText(editing_filter.name)
+        edit_filter_dlg.ui.namelineedit.setEnabled(False)
+
+        # Fill filter type and data
+        edit_filter_dlg.ui.filtertype_combobox.setCurrentIndex(edit_filter_dlg.ui.filtertype_combobox.findText(editing_filter.filter_type))
+        edit_filter_dlg.ui.datalineedit.setText(editing_filter.data)
+
+        # Fill application box
+        if editing_filter.application == consts.PATHS:
+            index = 0
+        elif editing_filter.application == consts.FILENAMES:
+            index = 1
+        else:
+            QMessageBox(self, "", "Invalid index - you shouldn't be seeing this. Please tell the developer.")
+            return
+        edit_filter_dlg.ui.appcombobox.setCurrentIndex(index)
+
+        # Fill item type box
+        if editing_filter.item_type == consts.BOTH:
+            index = 0
+        elif editing_filter.item_type == consts.DIRECTORY:
+            index = 1
+        elif editing_filter.item_type == consts.FILES:
+            index = 2
+        else:
+            QMessageBox(self, "", "Invalid index - you shouldn't be seeing this. Please tell the developer.")
+            return
+        edit_filter_dlg.ui.typecombobox.setCurrentIndex(index)
+
+        # Fill whitelist
+        edit_filter_dlg.ui.whitelistradiobtn.setChecked(editing_filter.whitelist)
+
+        # Open UI
+        response = edit_filter_dlg.exec()
+
+        if response == 1:
+            # Edit filter with new attributes
+            for filter_ in (self.loaded_cfg.regex_filters + self.loaded_cfg.keyword_filters):
+                # For each filter, compare its name with the name provided, break after editing the filter if found
+                if filter_.name == filter_name:
+
+                    # Set the filter being edited
+                    filter_.filter_type = edit_filter_dlg.filter_.filter_type
+                    filter_.data = edit_filter_dlg.filter_.data
+                    filter_.application = edit_filter_dlg.filter_.application
+                    filter_.item_type = edit_filter_dlg.filter_.item_type
+                    filter_.whitelist = edit_filter_dlg.filter_.whitelist
+
+                    # Note unsaved changes and return
+                    self.noteUnsavedChanges()
+                    return
+
+            # The filter should have been found
+            QMessageBox.warning(self, "", "Filter could not be edited. Please tell the developer.")
 
     def unsavedChangesCheck(self):
         """ Checks if there are unsaved changes, and asks the user what they want to do about it """

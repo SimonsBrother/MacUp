@@ -47,10 +47,10 @@ def applyFilter(regex_filters, keyword_filters, path):
             # blacklist is used, the result is true; whitelist allows items that match it through, and blacklist allows
             # items that don't match it through.
             if type_ == REGEX:
-                match = bool(re.match(filter_.regex, str_to_use))
+                match = bool(re.match(filter_.data, str_to_use))
                 result = match is filter_.whitelist
             else:  # Type must be KEYWORD
-                kw_in_str = filter_.keyword in str_to_use
+                kw_in_str = filter_.data in str_to_use
                 result = kw_in_str is filter_.whitelist
         else:
             # The regex does not apply to this item

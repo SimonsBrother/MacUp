@@ -18,14 +18,28 @@
                     "application": "FILENAMES",
                     "item_type": "BOTH",
                     "whitelist": "True",
-                    "regex": "._."
+                    "regex": "._._."
+                },
+                {
+                    "name": "test",
+                    "application": "PATHS",
+                    "item_type": "BOTH",
+                    "whitelist": "True",
+                    "regex": ""
+                },
+                {
+                    "name": "test example filter",
+                    "application": "PATHS",
+                    "item_type": "BOTH",
+                    "whitelist": "True",
+                    "regex": ".+Documents.+MacUp.+t"
                 }
             ],
             "keyword_filters": [
                 {
                     "name": "kw filter!!",
-                    "application": "PATHS",
-                    "item_type": "FILES",
+                    "application": "FILENAMES",
+                    "item_type": "DIRECTORY",
                     "whitelist": "True",
                     "keyword": "py"
                 }

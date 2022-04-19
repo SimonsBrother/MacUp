@@ -14,6 +14,7 @@ class ModifyFilterDialogUI(QDialog):
         self.ui.setupUi(self)
         self.setWindowTitle("Edit filter")
 
+        # Initialise filter
         self.filter_ = None
 
         # Initialises the Data label
@@ -23,12 +24,13 @@ class ModifyFilterDialogUI(QDialog):
         self.ui.testfileselect_btn.clicked.connect(self.openFilterTestFile)
 
         # Update filter test output connections
-        self.ui.testlineedit.textChanged.connect(self.updateFilterTestOutput)
+        self.ui.namelineedit.textChanged.connect(self.updateFilterTestOutput)
         self.ui.filtertype_combobox.currentIndexChanged.connect(self.updateFilterTestOutput)
         self.ui.datalineedit.textChanged.connect(self.updateFilterTestOutput)
         self.ui.appcombobox.currentIndexChanged.connect(self.updateFilterTestOutput)
         self.ui.typecombobox.currentIndexChanged.connect(self.updateFilterTestOutput)
         self.ui.whitelistradiobtn.clicked.connect(self.updateFilterTestOutput)
+        self.ui.testlineedit.textChanged.connect(self.updateFilterTestOutput)
 
     def whenFTypeCBoxChanged(self):
         """ Updates some parts of the UI when the type of filter is changed """
@@ -90,7 +92,7 @@ class ModifyFilterDialogUI(QDialog):
         self.filter_ = self.buildFilter()
         regex_filters = [self.filter_] if isinstance(self.filter_, RegexFilter) else []
         kw_filters = [self.filter_] if isinstance(self.filter_, KeywordFilter) else []
-        print(self.filter_)
+
         if self.ui.testlineedit.text() == "":
             # Path is blank
             self.ui.testfilteroutputlabel.setText("No item selected.")
