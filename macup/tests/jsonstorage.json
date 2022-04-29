@@ -4,44 +4,47 @@
         {
             "name": "write test",
             "source_dir": "/Users/calebhair/Documents/Projects/MacUp/macup/library/ui",
-            "target_dir": "target dir here",
-            "regex_filters": [
+            "target_dir": "target dir here?",
+            "filters": [
                 {
                     "name": "RegName",
+                    "filter_type": "REGEX",
+                    "data": "test",
                     "application": "PATHS",
                     "item_type": "DIRECTORY",
-                    "whitelist": "True",
-                    "regex": "test"
+                    "whitelist": "True"
                 },
                 {
                     "name": "dot underscore dot",
+                    "filter_type": "REGEX",
+                    "data": "._._.",
                     "application": "FILENAMES",
                     "item_type": "BOTH",
-                    "whitelist": "True",
-                    "regex": "._._."
+                    "whitelist": "True"
                 },
                 {
                     "name": "test",
+                    "filter_type": "REGEX",
+                    "data": "",
                     "application": "PATHS",
                     "item_type": "BOTH",
-                    "whitelist": "True",
-                    "regex": ""
+                    "whitelist": "True"
                 },
                 {
                     "name": "test example filter",
+                    "filter_type": "REGEX",
+                    "data": ".+Documents.+MacUp.+t",
                     "application": "PATHS",
                     "item_type": "BOTH",
-                    "whitelist": "True",
-                    "regex": ".+Documents.+MacUp.+t"
-                }
-            ],
-            "keyword_filters": [
+                    "whitelist": "True"
+                },
                 {
                     "name": "kw filter!!",
+                    "filter_type": "KEYWORD",
+                    "data": "py",
                     "application": "FILENAMES",
                     "item_type": "DIRECTORY",
-                    "whitelist": "True",
-                    "keyword": "py"
+                    "whitelist": "True"
                 }
             ],
             "overwrite": false
@@ -50,16 +53,23 @@
             "name": "123",
             "source_dir": "test",
             "target_dir": "/Users/calebhair/Documents/Projects/MacUp/macup/library/ui/__pycache__",
-            "regex_filters": [],
-            "keyword_filters": [],
+            "filters": [
+                {
+                    "name": "123",
+                    "filter_type": "KEYWORD",
+                    "data": "t",
+                    "application": "FILENAMES",
+                    "item_type": "FILES",
+                    "whitelist": "True"
+                }
+            ],
             "overwrite": false
         },
         {
             "name": "test",
             "source_dir": "test",
             "target_dir": "",
-            "regex_filters": [],
-            "keyword_filters": [],
+            "filters": [],
             "overwrite": true
         }
     ]

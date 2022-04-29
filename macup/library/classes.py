@@ -1,6 +1,6 @@
 import os
 from macup.library.constants import *
-
+from macup.library.filter import parseDictToFilter
 
 class FileTree:
     """
@@ -41,48 +41,41 @@ class Filter:
     Stores filter data.
     """
 
-    def __init__(self, application: str, item_type: str, whitelist: bool, name=""):
+    def __init__(self, name: str, filter_type: str, data: str, application: str, item_type: str, whitelist: bool):
         """
-        :param application: Whether the filter applies to the entire path or just the filename.
-        :param item_type: Whether the filter is applied to just files, just directories, or both.
-        :param whitelist:
+        :param name: The name of the filter
+        :param filter_type: The type of the filter (a constant from "library.constants")
+        :param data: The data for the filter
+        :param application: Whether the filter applies to the entire path or just the filename (a constant)
+        :param item_type: Whether the filter is applied to just files, just directories, or both (a constant)
+        :param whitelist: True means the file is to be copied if it matches this filter
         """
-        if application != FILENAMES and application != PATHS:  # Validate application
-            raise ValueError(f"application value must either be '{FILENAMES}' or '{PATHS}', but got '{application}'.")
-        if item_type != FILES and item_type != DIRECTORY and item_type != BOTH:
-            raise ValueError(
-                f"item_type value must be either '{FILES}', '{DIRECTORY}', or '{BOTH}', but got '{item_type}'.")
 
-        self.name = name
+        # Validate filter type
+        valid_filter_types = (REGEX, KEYWORD)
+        if filter_type not in valid_filter_types:
+            raise ValueError(f"application value must be one of {valid_filter_types}, but got '{filter_type}'.")
+
+        # Validate application
+        valid_applications = (FILENAMES, PATHS)
+        if application not in valid_applications:
+            raise ValueError(f"application value must be one of {valid_applications}, but got '{application}'.")
+
+        # Validate item type
+        valid_item_types = (FILES, DIRECTORY, BOTH)
+        if item_type not in valid_item_types:
+            raise ValueError(f"item_type value must be one of {valid_item_types}, but got '{item_type}'.")
+
+        self.name = str(name)
+        self.filter_type = filter_type
+        self.data = str(data)
         self.application = application
         self.item_type = item_type
-        self.whitelist = whitelist
+        self.whitelist = bool(whitelist)
 
     def __repr__(self):
-        return f"Filter(name='{self.name}', application='{self.application}'," \
-               f" item_type='{self.item_type}', whitelist={self.whitelist})"
-
-
-class RegexFilter(Filter):
-    def __init__(self, regex, application: str, item_type: str, whitelist: bool, name=""):
-        super().__init__(application, item_type, bool(whitelist), name)
-        self.data = regex
-        self.filter_type = "Regex"
-
-    def __repr__(self):
-        return f"RegexFilter(name='{self.name}', application='{self.application}'," \
-               f" item_type='{self.item_type}', whitelist={self.whitelist}, regex='{self.data}')"
-
-
-class KeywordFilter(Filter):
-    def __init__(self, keyword, application: str, item_type: str, whitelist: bool, name=""):
-        super().__init__(application, item_type, bool(whitelist), name)
-        self.data = keyword
-        self.filter_type = "Keyword"
-
-    def __repr__(self):
-        return f"KeywordFilter(name='{self.name}', application='{self.application}'," \
-               f" item_type='{self.item_type}', whitelist={self.whitelist}, data='{self.data}')"
+        return f"Filter(name='{self.name}', filter_type='{self.filter_type}', data='{self.data}', " \
+               f"application='{self.application}', item_type='{self.item_type}', whitelist='{self.whitelist}')"
 
 
 class Configuration:
@@ -90,13 +83,13 @@ class Configuration:
     A class to store configuration data from a json file.
     """
 
-    def __init__(self, name, source_dir, target_dir, regex_filters, keyword_filters, overwrite):
+    def __init__(self, name: str, source_dir: str, target_dir: str, filters, overwrite: bool):
         """
-        :param regex_filters: Either: a list of dicts, each containing data to make a RegexFilter
-                or a list of RegexFilter objects.
-        :param keyword_filters: Either: a list of dicts, each containing data to make a KeywordFilter,
-                or a list of KeywordFilter objects.
-                The filters are converted to their object if they are supplied as a dictionary.
+        :param name: Name of configuration
+        :param source_dir: Directory to copy items from
+        :param target_dir: Directory to copy items to
+        :param filters: List of Filter objects or dicts representing filters
+        :param overwrite: Whether or not to overwrite already existing files
         """
 
         self.name = name
@@ -104,42 +97,18 @@ class Configuration:
         self.target_dir = target_dir
         self.overwrite = overwrite
 
-        # Regex filters
-        if not regex_filters:
-            # If empty list
-            self.regex_filters = []
-
-        elif isinstance(regex_filters[0], RegexFilter):
-            # If filters are objects
-            self.regex_filters = regex_filters
-
+        # Filters
+        # If there are no filters
+        if not filters:
+            self.filters = []
+        # Else, make sure the first is a Filter object or dict
+        elif isinstance(filters[0], Filter):
+            self.filters = filters
+        elif isinstance(filters[0], dict):
+            self.filters = [parseDictToFilter(dict_filter) for dict_filter in filters]
         else:
-            # If filters are dicts
-            self.regex_filters = []
-            # Parse regex filters, populate regex_filters
-            for regex_filter in regex_filters:
-                self.regex_filters.append(RegexFilter(regex_filter["regex"], regex_filter["application"],
-                                                      regex_filter["item_type"], regex_filter["whitelist"],
-                                                      regex_filter["name"]))
-
-        # Keyword filters
-        if not keyword_filters:
-            # If empty list
-            self.keyword_filters = []
-
-        elif isinstance(keyword_filters[0], KeywordFilter):
-            # If filters are objects
-            self.keyword_filters = keyword_filters
-
-        else:
-            # If filters are dicts
-            self.keyword_filters = []
-            # Parse keyword filters, populate keyword_filters
-            for keyword_filter in keyword_filters:
-                self.keyword_filters.append(KeywordFilter(keyword_filter["keyword"], keyword_filter["application"],
-                                                          keyword_filter["item_type"], keyword_filter["whitelist"],
-                                                          keyword_filter["name"]))
+            raise ValueError(f"Filters must be a list of objects or a list of dicts, not {type(filters[0])}")
 
     def __repr__(self):
         return f"Configuration(name='{self.name}', source_dir='{self.source_dir}', target_dir='{self.target_dir}', " \
-               f"regex_filters={self.regex_filters}, keyword_filters={self.keyword_filters}, overwrite={self.overwrite})"
+               f"keyword_filters={self.filters}, overwrite={self.overwrite})"

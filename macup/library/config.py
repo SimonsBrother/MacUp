@@ -18,7 +18,7 @@ def loadConfigs(json_path):
         configs = []
         for config in json_configs:
             configs.append(Configuration(config["name"], config["source_dir"], config["target_dir"],
-                                         config["regex_filters"], config["keyword_filters"], config["overwrite"]))
+                                         config["filters"], config["overwrite"]))
     return configs
 
 
@@ -40,39 +40,28 @@ def parseConfigToDict(config):
     :return: A dictionary, suitable for json storage
     """
 
-    # todo: could be made less redundant (package filters to work with one for loop)
+    if not isinstance(config, Configuration):
+        raise ValueError(f"Configuration must be a Configuration object, got {type(config)}")
 
-    # Parse each regex filter in each config
-    regex_filters_dict = []
-    for regex_filter in config.regex_filters:
-        json_regex_filter = {
-            "name": str(regex_filter.name),
-            "application": str(regex_filter.application),
-            "item_type": str(regex_filter.item_type),
-            "whitelist": str(regex_filter.whitelist),
-            "regex": str(regex_filter.data)
+    # Parse each filter
+    filter_dicts = []
+    for filter_ in config.filters:
+        filter_dict = {
+            "name": str(filter_.name),
+            "filter_type": str(filter_.filter_type),
+            "data": str(filter_.data),
+            "application": str(filter_.application),
+            "item_type": str(filter_.item_type),
+            "whitelist": str(filter_.whitelist)
         }
-        regex_filters_dict.append(json_regex_filter)
-
-    # Parse each data filter in each config
-    kw_filters_dict = []
-    for kw_filter in config.keyword_filters:
-        json_kw_filter = {
-            "name": str(kw_filter.name),
-            "application": str(kw_filter.application),
-            "item_type": str(kw_filter.item_type),
-            "whitelist": str(kw_filter.whitelist),
-            "keyword": str(kw_filter.data)
-        }
-        kw_filters_dict.append(json_kw_filter)
+        filter_dicts.append(filter_dict)
 
     # Build configuration dict
     config_dict = {
         "name": str(config.name),
         "source_dir": str(config.source_dir),
         "target_dir": str(config.target_dir),
-        "regex_filters": regex_filters_dict,
-        "keyword_filters": kw_filters_dict,
+        "filters": filter_dicts,
         "overwrite": bool(config.overwrite)
     }
 
@@ -87,24 +76,28 @@ def parseDictToConfig(dict_):
     :return: Configuration object
     """
 
+    if not isinstance(dict_, dict):
+        raise ValueError(f"Configuration must be a dict, got {type(dict_)}")
+
     return Configuration(dict_["name"], dict_["source_dir"], dict_["target_dir"],
-                         dict_["regex_filters"], dict_["keyword_filters"], dict_["overwrite"])
+                         dict_["filters"], dict_["overwrite"])
 
 
-def saveConfig(json_path, config):
+def saveConfig(config, json_path):
     """
     Save the configuration supplied, to the json file path; if a configuration with the same name exists,
-    it will be overwritten.
+    it will be overwritten. Handles converting between objects and dictionaries.
 
-    :param json_path: The json file path
     :param config: A config dictionary or object
+    :param json_path: The json file path
     """
 
+    if not isinstance(config, (dict, Configuration)):
+        raise TypeError(f"Must be either dict or Configuration object, not {type(config)}")
+
+    # Convert to dict
     if isinstance(config, Configuration):
         config = parseConfigToDict(config)
-    # Touch of error checking
-    elif not isinstance(config, dict):
-        raise TypeError("Must be either dict or Configuration object")
 
     f = open(json_path, "r")
     json_file = json.load(f)
@@ -128,7 +121,7 @@ def saveConfig(json_path, config):
 
 def saveNewBlankConfig(name, json_path):
     """Saves an almost blank configuration with just the name filled"""
-    saveConfig(json_path, parseConfigToDict(Configuration(name, "", "", [], [], False)))
+    saveConfig(parseConfigToDict(Configuration(name, "", "", [], False)), json_path)
 
 # todo: make test (already tested in ui)
 def checkNameExists(name, json_path):

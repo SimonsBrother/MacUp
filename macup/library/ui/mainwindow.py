@@ -2,7 +2,6 @@ from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox
 
 import macup.library.config as cfglib
-from macup.library.classes import Configuration, RegexFilter, KeywordFilter
 import macup.library.constants as consts
 
 from macup.ui.mainwindow import Ui_MainWindow
@@ -109,37 +108,42 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.loaded_cfg.source_dir = self.src_line.text()
         self.loaded_cfg.target_dir = self.target_line.text()
 
-        # The loaded_cfg property is modified directly when filters are edited
+        # The loaded_cfg attribute is modified directly when filters are edited, i.e., filters are directly changed
+        # when they are edited
 
         self.loaded_cfg.overwrite = self.overwrite_check.isChecked()
 
-        cfglib.saveConfig(self.data_path, self.loaded_cfg)
+        cfglib.saveConfig(self.loaded_cfg, self.data_path)
         self.noteSavedChanges()
         QMessageBox.information(self, "", "Save successful.")
 
     def loadCfg(self, name):
         """ Populate the UI with data from the config specified by name """
-
+        # Set attribute
         self.loaded_cfg = cfglib.loadConfig(name, self.data_path)
 
+        # Set target and source directory
         self.src_line.setText(self.loaded_cfg.source_dir)
         self.target_line.setText(self.loaded_cfg.target_dir)
 
+        # Filters
         self.filter_listwidget.clear()
-        filters = self.loaded_cfg.regex_filters + self.loaded_cfg.keyword_filters
-        self.filter_listwidget.addItems([filter_.name for filter_ in filters])
+        self.filter_listwidget.addItems([filter_.name for filter_ in self.loaded_cfg.filters])
 
         self.overwrite_check.setChecked(self.loaded_cfg.overwrite)
 
         self.cfgselect_combobox.setCurrentIndex(self.cfgselect_combobox.findText(self.loaded_cfg.name))
 
     def selectSourceDir(self):
+        """ Opens the directory selection when the source directory button is pressed """
         self.openFileDialog(self.src_line)
 
     def selectTargetDir(self):
+        """ Opens the directory selection when the target directory button is pressed """
         self.openFileDialog(self.target_line)
 
     def openFileDialog(self, target_lineedit=None):
+        """ Opens a QFileDialog, configured for selecting directories """
         file_dlg = QtWidgets.QFileDialog()
         selected_dir = file_dlg.getExistingDirectory()
 
@@ -151,20 +155,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return selected_dir
 
     def openAddFilterDialog(self):
+        """ Opens the dialog for adding a filter """
         edit_filter_dlg = ModifyFilterDialogUI()
         edit_filter_dlg.setWindowTitle("Add filter")
         response = edit_filter_dlg.exec()
 
         if response == 1:
             filter_ = edit_filter_dlg.filter_
-            if isinstance(filter_, RegexFilter):
-                self.loaded_cfg.regex_filters.append(filter_)
-            # Use elif in case None returned
-            elif isinstance(filter_, KeywordFilter):
-                self.loaded_cfg.keyword_filters.append(filter_)
+            if filter_ is not None:
+                self.loaded_cfg.filters.append(filter_)
 
-            self.filter_listwidget.addItem(filter_.name)
-            self.noteUnsavedChanges()
+                self.filter_listwidget.addItem(filter_.name)
+                self.noteUnsavedChanges()
 
     def openEditFilterDialog_byBtn(self):
         """ Handles the opening of the dialog for editing a filter by edit btn, :returns true if successful """
@@ -177,10 +179,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def openEditFilterDialog(self, filter_name):
         """ Handles opening a dialog for editing a filter, given an argument. To be called by other functions. """
-        # todo: known bug with changing type of filter, going to change filter system
         # Get the filter that matches the filter name supplied
         editing_filter = None
-        for filter_ in (self.loaded_cfg.regex_filters + self.loaded_cfg.keyword_filters):
+        for filter_ in self.loaded_cfg.filters:
             # For each filter, compare its name with the name provided, break out after noting the filter if found
             if filter_.name == filter_name:
                 editing_filter = filter_
@@ -196,8 +197,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         edit_filter_dlg.ui.namelineedit.setText(editing_filter.name)
         edit_filter_dlg.ui.namelineedit.setEnabled(False)
 
-        # Fill filter type and data
-        edit_filter_dlg.ui.filtertype_combobox.setCurrentIndex(edit_filter_dlg.ui.filtertype_combobox.findText(editing_filter.filter_type))
+        # Fill filter type
+        if editing_filter.filter_type == consts.REGEX:
+            index = 0
+        elif editing_filter.filter_type == consts.KEYWORD:
+            index = 1
+        else:
+            QMessageBox(self, "", "Invalid index for filter type - you shouldn't be seeing this. Please tell the developer.")
+            return
+        edit_filter_dlg.ui.filtertype_combobox.setCurrentIndex(index)
+
+        # Fill data
         edit_filter_dlg.ui.datalineedit.setText(editing_filter.data)
 
         # Fill application box
@@ -206,7 +216,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif editing_filter.application == consts.FILENAMES:
             index = 1
         else:
-            QMessageBox(self, "", "Invalid index - you shouldn't be seeing this. Please tell the developer.")
+            QMessageBox(self, "", "Invalid index for application - you shouldn't be seeing this. Please tell the developer.")
             return
         edit_filter_dlg.ui.appcombobox.setCurrentIndex(index)
 
@@ -218,7 +228,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif editing_filter.item_type == consts.FILES:
             index = 2
         else:
-            QMessageBox(self, "", "Invalid index - you shouldn't be seeing this. Please tell the developer.")
+            QMessageBox(self, "", "Invalid index for item type - you shouldn't be seeing this. Please tell the developer.")
             return
         edit_filter_dlg.ui.typecombobox.setCurrentIndex(index)
 
@@ -230,16 +240,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if response == 1:
             # Edit filter with new attributes
-            for filter_ in (self.loaded_cfg.regex_filters + self.loaded_cfg.keyword_filters):
+            for i, filter_ in enumerate(self.loaded_cfg.filters):
                 # For each filter, compare its name with the name provided, break after editing the filter if found
                 if filter_.name == filter_name:
-
-                    # Set the filter being edited
-                    filter_.filter_type = edit_filter_dlg.filter_.filter_type
-                    filter_.data = edit_filter_dlg.filter_.data
-                    filter_.application = edit_filter_dlg.filter_.application
-                    filter_.item_type = edit_filter_dlg.filter_.item_type
-                    filter_.whitelist = edit_filter_dlg.filter_.whitelist
+                    # Apply the edit
+                    self.loaded_cfg.filters[i] = edit_filter_dlg.filter_
 
                     # Note unsaved changes and return
                     self.noteUnsavedChanges()

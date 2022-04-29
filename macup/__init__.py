@@ -6,3 +6,5 @@
 # todo: handle exceptions and permission requirements
 
 # todo: document library files
+
+# todo: Completely rework filter system logic

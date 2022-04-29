@@ -1,8 +1,3 @@
-"""
-
-"""
-
-
 import macup.library.classes as cls
 from macup.library.filter import buildFilter
 from macup.library.constants import *
@@ -14,7 +9,7 @@ import shutil
 
 def traverseFileTree(ft_node, dir_func=tuple(), file_func=tuple(), use_child_as_parameter=False):
     """
-    Traverses a FileTree and performs a function to each node.
+    Traverses a FileTree and performs a function to each node. It's an overcomplicated mess, might remove later.
 
     :param use_child_as_parameter: Boolean that indicates whether the child variable should be passed into functions.
     :param ft_node: A FileTree object, from which to traverse.
@@ -132,11 +127,11 @@ def copyFiles(files, source_dir, target_dir, overwrite):
             shutil.copy(files[i], new_file_path)
 
 
-def backup(src_dir, target_dir, regex_filters, kw_filters, overwrite):
+def backup(src_dir, target_dir, filters, overwrite):
     # todo: progress monitoring
     # todo: exception handling
     # Build file tree, according to filters
-    source_filetree_node = cls.FileTree(src_dir, buildFilter(regex_filters, kw_filters))
+    source_filetree_node = cls.FileTree(src_dir, buildFilter(filters))
 
     # Get all the paths of every directory under the source node
     dir_paths = [dir_filetree.path for dir_filetree in getAll(DIRECTORY, source_filetree_node)]

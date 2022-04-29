@@ -49,7 +49,8 @@ def getFilters(prompt, error_prompt, accepted_prompt, split_value, filtertype):
 source_dir = getDirectory("Input source directory: ")
 target_dir = getDirectory("Input target directory: ")
 overwrite = getOption("Overwrite files? (y/n): ")
-regex_filters = getFilters("Input regex filters, type exit to quit; usage-  Regex : Application['FILENAMES'/'PATHS'] : "
+# BROKEN - MIGHT FIX LATER
+"""regex_filters = getFilters("Input regex filters, type exit to quit; usage-  Regex : Application['FILENAMES'/'PATHS'] : "
                            "Type['FILES'/'DIRECTORY'/'BOTH'] : Whitelist[True/False] : Name\nInput: ",
                            "Invalid regex filter: ", "Regex filter accepted: ", ':', cls.RegexFilter)
 
@@ -59,4 +60,4 @@ keyword_filters = getFilters(
     "Invalid keyword filter: ", "Keyword filter accepted: ", ':', cls.KeywordFilter)
 
 
-bk.backup(source_dir, target_dir, regex_filters, keyword_filters, overwrite)
+bk.backup(source_dir, target_dir, regex_filters, keyword_filters, overwrite)"""
