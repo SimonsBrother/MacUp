@@ -52,7 +52,7 @@ def parseConfigToDict(config):
             "data": str(filter_.data),
             "application": str(filter_.application),
             "item_type": str(filter_.item_type),
-            "whitelist": str(filter_.whitelist)
+            "whitelist": bool(filter_.whitelist)
         }
         filter_dicts.append(filter_dict)
 

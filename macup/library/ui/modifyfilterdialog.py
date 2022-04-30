@@ -4,7 +4,7 @@ from macup.ui.modifyfilter import Ui_modifyfilter
 
 from macup.library.classes import Filter
 from macup.library.constants import *
-from macup.library.filter import applyFilter
+from macup.library.filter import applyFilters
 
 
 class ModifyFilterDialogUI(QDialog):
@@ -95,7 +95,7 @@ class ModifyFilterDialogUI(QDialog):
         if self.ui.testlineedit.text() == "":
             # Path is blank
             self.ui.testfilteroutputlabel.setText("No item selected.")
-        elif applyFilter([self.filter_], self.ui.testlineedit.text()):
+        elif applyFilters([self.filter_], self.ui.testlineedit.text()):
             # Item will be copied
             self.ui.testfilteroutputlabel.setText("Item matches this filter, and will be copied.")
         else:

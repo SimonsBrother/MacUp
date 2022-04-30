@@ -8,7 +8,7 @@ import os
 import re
 
 
-def applyFilter(filters, path):
+def applyFilters(filters, path):
     """
     Checks whether a certain path satisfies all the filters provided.
 
@@ -76,12 +76,12 @@ def buildFilter(filters):
     """
 
     def filter_(path):
-        return applyFilter(filters, path)
+        return applyFilters(filters, path)
 
     return filter_
 
 
-#todo untested
+# todo untested
 def parseFilterToDict(filter_):
     return {
         "name": str(filter_.name),
@@ -93,7 +93,7 @@ def parseFilterToDict(filter_):
     }
 
 
-#todo untested
+# todo untested
 def parseDictToFilter(dict_):
     from macup.library.classes import Filter
     return Filter(name=dict_["name"],

@@ -1,3 +1,5 @@
+import os
+
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox
 
@@ -7,7 +9,6 @@ import macup.library.constants as consts
 from macup.ui.mainwindow import Ui_MainWindow
 from macup.library.ui.addconfig import AddConfigDialogUI
 from macup.library.ui.modifyfilterdialog import ModifyFilterDialogUI
-
 
 window_title = "MacUp"
 
@@ -30,15 +31,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.savecfg_btn.clicked.connect(self.saveCfg)
         self.cfgselect_combobox.textActivated.connect(self.cfgSelected)
         self.cfgselect_combobox.activated.connect(self.recordConfigSelection)
+
         self.src_btn.clicked.connect(self.selectSourceDir)
         self.target_btn.clicked.connect(self.selectTargetDir)
+
         self.addfilter_btn.clicked.connect(self.openAddFilterDialog)
         self.editfilter_btn.clicked.connect(self.openEditFilterDialog_byBtn)
+        self.delfilter_btn.clicked.connect(self.deleteSelectedFilter)
+
+        self.testfilter_btn.clicked.connect(self.openTestingItemFileDialog)
+        self.testfilter_lnedit.textChanged.connect(self.applyFiltersToTest)
+
+        self.backup_btn.clicked.connect(self.startBackup)
 
         # Unsaved changes detection
         # textEdited must be used - textChanged causes problems when switching between configs
         self.src_line.textEdited.connect(self.noteUnsavedChanges)
         self.target_line.textEdited.connect(self.noteUnsavedChanges)
+        self.overwrite_check.stateChanged.connect(self.noteUnsavedChanges)
 
     def openAddCfg(self):
         """ Opens the Add configuration UI """
@@ -59,7 +69,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Save the new configuration
                 cfglib.saveNewBlankConfig(cfg_name, self.data_path)
                 # Offer to load
-                if QMessageBox.question(self, "", "Do you want to load the new configuration?") == QMessageBox.StandardButton.Yes:
+                if QMessageBox.question(self, "",
+                                        "Do you want to load the new configuration?") == QMessageBox.StandardButton.Yes:
                     # Automatically load the new configuration depending on user's actions
                     save = self.unsavedChangesCheck()
                     if save != QMessageBox.StandardButton.Cancel:
@@ -167,6 +178,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 self.filter_listwidget.addItem(filter_.name)
                 self.noteUnsavedChanges()
+                self.applyFiltersToTest()
 
     def openEditFilterDialog_byBtn(self):
         """ Handles the opening of the dialog for editing a filter by edit btn, :returns true if successful """
@@ -203,7 +215,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif editing_filter.filter_type == consts.KEYWORD:
             index = 1
         else:
-            QMessageBox(self, "", "Invalid index for filter type - you shouldn't be seeing this. Please tell the developer.")
+            QMessageBox(self, "",
+                        "Invalid index for filter type - you shouldn't be seeing this. Please tell the developer.")
             return
         edit_filter_dlg.ui.filtertype_combobox.setCurrentIndex(index)
 
@@ -216,7 +229,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif editing_filter.application == consts.FILENAMES:
             index = 1
         else:
-            QMessageBox(self, "", "Invalid index for application - you shouldn't be seeing this. Please tell the developer.")
+            QMessageBox(self, "",
+                        "Invalid index for application - you shouldn't be seeing this. Please tell the developer.")
             return
         edit_filter_dlg.ui.appcombobox.setCurrentIndex(index)
 
@@ -228,7 +242,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif editing_filter.item_type == consts.FILES:
             index = 2
         else:
-            QMessageBox(self, "", "Invalid index for item type - you shouldn't be seeing this. Please tell the developer.")
+            QMessageBox(self, "",
+                        "Invalid index for item type - you shouldn't be seeing this. Please tell the developer.")
             return
         edit_filter_dlg.ui.typecombobox.setCurrentIndex(index)
 
@@ -248,10 +263,56 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
                     # Note unsaved changes and return
                     self.noteUnsavedChanges()
+                    self.applyFiltersToTest()
                     return
 
             # The filter should have been found
             QMessageBox.warning(self, "", "Filter could not be edited. Please tell the developer.")
+
+    def deleteSelectedFilter(self):
+        """ Deletes the selected filter from the list of filters, returns true if successful """
+        if len(self.filter_listwidget.selectedItems()) == 0:
+            QMessageBox.information(self, "", "No filters selected.")
+        elif len(self.filter_listwidget.selectedItems()) == 1:
+            filter_to_del_name = self.filter_listwidget.selectedItems()[0].text()
+            if QMessageBox.question(self, "", f"Are you sure you want to delete {filter_to_del_name}?") == QMessageBox.StandardButton.Yes:
+                # Remove filter
+                for i, filter_ in enumerate(self.loaded_cfg.filters):
+                    if filter_.name == filter_to_del_name:
+                        self.loaded_cfg.filters.pop(i)
+
+                # Update UI
+                self.filter_listwidget.takeItem(self.filter_listwidget.selectedIndexes()[0].row())
+                self.noteUnsavedChanges()
+                self.applyFiltersToTest()
+                return True
+
+        return False
+
+    def openTestingItemFileDialog(self):
+        """ Opens the FileDialog to select a file to test the filters """
+        file_dlg = QtWidgets.QFileDialog()
+        selected_dir = file_dlg.getOpenFileName()[0]  # todo: allow for dir selection if possible
+
+        # Check that the user didn't press cancel, which returns a blank, falsy string
+        if selected_dir:
+            # Set lineedit
+            self.testfilter_lnedit.setText(selected_dir)
+            self.applyFiltersToTest()
+            return selected_dir
+
+    def applyFiltersToTest(self):
+        """ Updates the test label """
+        from macup.library.filter import applyFilters
+        if self.testfilter_lnedit.text() == "":
+            # Path is blank
+            self.testfilteroutput_label.setText("No item selected.")
+        elif applyFilters(self.loaded_cfg.filters, self.testfilter_lnedit.text()):
+            # Item will be copied
+            self.testfilteroutput_label.setText("Item matches this filter, and will be copied.")
+        else:
+            # Item will not be copied
+            self.testfilteroutput_label.setText("Item does not match this filter, and will not be copied.")
 
     def unsavedChangesCheck(self):
         """ Checks if there are unsaved changes, and asks the user what they want to do about it """
@@ -305,6 +366,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def recordConfigSelection(self, index):
         self.selected_config_log.append(index)
+
+    def startBackup(self):
+        """ Starts the backup, returns true if successful """
+        # Force the configuration to be saved
+        if self.unsavedChanges:
+            QMessageBox.warning(self, "", "Save the configuration before backing up.")
+            return False
+
+        # Check paths are valid
+        if not os.path.isdir(self.loaded_cfg.source_dir):
+            QMessageBox.warning(self, "", "Invalid source directory.")
+            return False
+        elif not os.path.isdir(self.loaded_cfg.target_dir):
+            QMessageBox.warning(self, "", "Invalid target directory.")
+            return False
+
+        from macup.library.backup import backup
+        backup(src_dir=self.loaded_cfg.source_dir,
+               target_dir=self.loaded_cfg.target_dir,
+               filters=self.loaded_cfg.filters,
+               overwrite=self.overwrite_check.isChecked())
 
 
 def main():

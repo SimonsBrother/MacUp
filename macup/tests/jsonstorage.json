@@ -12,7 +12,7 @@
                     "data": "test",
                     "application": "PATHS",
                     "item_type": "DIRECTORY",
-                    "whitelist": "True"
+                    "whitelist": true
                 },
                 {
                     "name": "dot underscore dot",
@@ -20,7 +20,7 @@
                     "data": "._._.",
                     "application": "FILENAMES",
                     "item_type": "BOTH",
-                    "whitelist": "True"
+                    "whitelist": true
                 },
                 {
                     "name": "test",
@@ -28,7 +28,7 @@
                     "data": "",
                     "application": "PATHS",
                     "item_type": "BOTH",
-                    "whitelist": "True"
+                    "whitelist": true
                 },
                 {
                     "name": "test example filter",
@@ -36,7 +36,7 @@
                     "data": ".+Documents.+MacUp.+t",
                     "application": "PATHS",
                     "item_type": "BOTH",
-                    "whitelist": "True"
+                    "whitelist": true
                 },
                 {
                     "name": "kw filter!!",
@@ -44,7 +44,7 @@
                     "data": "py",
                     "application": "FILENAMES",
                     "item_type": "DIRECTORY",
-                    "whitelist": "True"
+                    "whitelist": true
                 }
             ],
             "overwrite": false
@@ -60,7 +60,7 @@
                     "data": "t",
                     "application": "FILENAMES",
                     "item_type": "FILES",
-                    "whitelist": "True"
+                    "whitelist": true
                 }
             ],
             "overwrite": false
@@ -71,6 +71,13 @@
             "target_dir": "",
             "filters": [],
             "overwrite": true
+        },
+        {
+            "name": "noalevels",
+            "source_dir": "/Users/calebhair/Documents/School",
+            "target_dir": "/Users/calebhair/Documents/Projects/MacUp/macup/tests/TestDir/Folder3/SubFolder1",
+            "filters": [],
+            "overwrite": false
         }
     ]
 }
